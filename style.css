@@ -557,3 +557,29 @@ body {
     font-size: 1.75rem;
   }
 }
+/* --------------------------------------------------
+   Floating WhatsApp Quick-Action
+   -------------------------------------------------- */
+.floating-whatsapp {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: var(--color-whatsapp);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8rem;
+  box-shadow: 0 4px 14px rgba(37, 211, 102, 0.4);
+  text-decoration: none;
+  z-index: 100;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.floating-whatsapp:hover {
+  background-color: var(--color-whatsapp-hover);
+  transform: scale(1.08);
+}
