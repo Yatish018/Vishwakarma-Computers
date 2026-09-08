@@ -73,11 +73,11 @@ function updateOfficeStatus() {
   const currentDecHour = hour + minute / 60;
   const isSunday = weekday === "Sun";
 
-  // Mon–Sat: 9:30 AM (9.5) to 7:30 PM (19.5)
-  if (!isSunday && currentDecHour >= 9.5 && currentDecHour < 19.5) {
-    statusBadge.textContent = "🟢 Office Open (9:30 AM – 7:30 PM)";
-    statusBadge.className = "status-badge open";
-  } else {
+// Mon–Sat: 9:30 AM (9.5) to 9:30 PM (21.5)
+if (!isSunday && currentDecHour >= 9.5 && currentDecHour < 21.5) {
+  statusBadge.textContent = "🟢 Office Open (9:30 AM – 9:30 PM)";
+  statusBadge.className = "status-badge open";
+} else {
     statusBadge.textContent = isSunday 
       ? "🔴 Closed Today (Available on Call / By Appointment)"
       : "🔴 Office Closed (Opens Tomorrow at 9:30 AM)";
