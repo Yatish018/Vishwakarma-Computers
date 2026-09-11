@@ -5,12 +5,12 @@ const checklistData = {
     note: "All parties (Buyer, Seller, and 2 Witnesses) must carry original photo IDs.",
     items: [
       "Original Title Document / Chain of Deeds (मूल पट्टा, रजिस्ट्री या आवंटन पत्र)",
-      "Aadhaar Card and PAN Card of both Seller and Buyer ",
-      "Two passport-sized photographs of Seller and Buyer ",
+      "Aadhaar Card and PAN Card of both Seller and Buyer",
+      "Two passport-sized photographs of Seller and Buyer",
       "Latest Property Tax receipt or Electricity Bill (proof of possession)",
       "Apna Khata Jamabandi & Bhunaksha (खसरा/खाता नकल - for agricultural/revenue land)",
-      "Two Witnesses with original Aadhaar cards and PAN cards and 2 passport-sized photographs",
-      "Draft payment details (Cheque/DD/RTGS reference for consideration amount)"
+      "Two Witnesses with original Aadhaar cards and PAN cards",
+      "Payment details (Cheque / DD / RTGS reference for consideration amount)"
     ]
   },
   lease: {
@@ -44,17 +44,18 @@ const checklistData = {
       "Name of Revenue Village (ग्राम/पटवार हल्का) and Tehsil (तहसील: सांगानेर)",
       "Khasra Number (खसरा संख्या) OR Khata Number (खाता संख्या)",
       "Name of Current Khatedar/Owner as per revenue records",
-      "Applicant's mobile number for verification and receiving certified digital printouts"
+      "Applicant mobile number for verification"
     ]
   }
 };
 
-// --- Dynamic Office Hours Status ---
+let currentChecklistType = "sale";
+
+// --- Dynamic Office Hours Status (9:30 AM to 9:30 PM IST) ---
 function updateOfficeStatus() {
   const statusBadge = document.getElementById("office-status");
   if (!statusBadge) return;
 
-  // Calculate local time in India Standard Time (IST)
   const now = new Date();
   const options = { timeZone: "Asia/Kolkata", hour12: false, weekday: "short", hour: "numeric", minute: "numeric" };
   const formatter = new Intl.DateTimeFormat("en-US", options);
@@ -73,11 +74,11 @@ function updateOfficeStatus() {
   const currentDecHour = hour + minute / 60;
   const isSunday = weekday === "Sun";
 
-// Mon–Sat: 9:30 AM (9.5) to 9:30 PM (21.5)
-if (!isSunday && currentDecHour >= 9.5 && currentDecHour < 21.5) {
-  statusBadge.textContent = "🟢 Office Open (9:30 AM – 9:30 PM)";
-  statusBadge.className = "status-badge open";
-} else {
+  // Mon–Sat: 9:30 AM (9.5) to 9:30 PM (21.5)
+  if (!isSunday && currentDecHour >= 9.5 && currentDecHour < 21.5) {
+    statusBadge.textContent = "🟢 Office Open (9:30 AM – 9:30 PM)";
+    statusBadge.className = "status-badge open";
+  } else {
     statusBadge.textContent = isSunday 
       ? "🔴 Closed Today (Available on Call / By Appointment)"
       : "🔴 Office Closed (Opens Tomorrow at 9:30 AM)";
@@ -85,8 +86,9 @@ if (!isSunday && currentDecHour >= 9.5 && currentDecHour < 21.5) {
   }
 }
 
-// --- Render Checklist Function ---
+// --- Render Checklist with "Copy Checklist" Action ---
 function renderChecklist(type) {
+  currentChecklistType = type;
   const container = document.getElementById("checklist-result");
   const data = checklistData[type];
   if (!container || !data) return;
@@ -94,36 +96,75 @@ function renderChecklist(type) {
   const itemsHtml = data.items.map((item) => `<li>${item}</li>`).join("");
 
   container.innerHTML = `
-    <h4>${data.title}</h4>
-    <p>${data.note}</p>
+    <div class="checklist-header">
+      <div>
+        <h4>${data.title}</h4>
+        <p class="checklist-note">${data.note}</p>
+      </div>
+      <button type="button" id="copy-checklist-btn" class="btn btn-copy">📋 Copy Checklist</button>
+    </div>
     <ul class="checklist-items">
       ${itemsHtml}
     </ul>
   `;
+
+  // Attach clipboard copy handler
+  const copyBtn = document.getElementById("copy-checklist-btn");
+  if (copyBtn) {
+    copyBtn.addEventListener("click", () => {
+      const textToCopy = `${data.title}\n\nNote: ${data.note}\n\nRequired Documents:\n` +
+        data.items.map((it, idx) => `${idx + 1}. ${it}`).join("\n") +
+        `\n\nOffice: Vishwakarma Computers, Opp. SBI Bank, Nagar Nigam Road, Sanganer, Jaipur.`;
+
+      navigator.clipboard.writeText(textToCopy).then(() => {
+        copyBtn.textContent = "✅ Copied!";
+        setTimeout(() => {
+          copyBtn.textContent = "📋 Copy Checklist";
+        }, 2000);
+      });
+    });
+  }
 }
 
-// --- Initialize Event Listeners ---
+// --- Live Service Search Filtering ---
+function setupServiceSearch() {
+  const searchInput = document.getElementById("service-search");
+  const cards = document.querySelectorAll(".service-card");
+
+  if (!searchInput) return;
+
+  searchInput.addEventListener("input", (e) => {
+    const query = e.target.value.toLowerCase().trim();
+
+    cards.forEach((card) => {
+      const searchData = (card.dataset.title || "").toLowerCase();
+      const cardText = card.innerText.toLowerCase();
+      if (searchData.includes(query) || cardText.includes(query)) {
+        card.style.display = "flex";
+      } else {
+        card.style.display = "none";
+      }
+    });
+  });
+}
+
+// --- Initialize App ---
 function init() {
-  // Update footer year dynamically
   const yearSpan = document.getElementById("current-year");
   if (yearSpan) {
     yearSpan.textContent = new Date().getFullYear();
   }
 
-  // Update office open/closed status
   updateOfficeStatus();
-
-  // Initial rendering of the first tab (Sale deed)
   renderChecklist("sale");
+  setupServiceSearch();
 
-  // Tab button switching logic
   const tabButtons = document.querySelectorAll(".tab-btn");
   tabButtons.forEach((btn) => {
     btn.addEventListener("click", () => {
       tabButtons.forEach((b) => b.classList.remove("active"));
       btn.classList.add("active");
-      const selectedType = btn.dataset.type;
-      renderChecklist(selectedType);
+      renderChecklist(btn.dataset.type);
     });
   });
 }
