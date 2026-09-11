@@ -1,28 +1,46 @@
 /* --------------------------------------------------
-   Design Tokens - Modern Light Legal Theme
+   Eye-Comfort Heritage Legal Palette & Spacing
    -------------------------------------------------- */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+
 :root {
-  --font-base: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans Devanagari", sans-serif;
-  --color-primary: #0f172a;       /* Deep slate navy for headings */
-  --color-primary-soft: #334155;  /* Slate text */
-  --color-accent: #b45309;        /* Warm legal amber / brass */
-  --color-accent-light: #fef3c7;  /* Soft amber background badge */
-  --color-accent-hover: #92400e;
-  --color-whatsapp: #16a34a;      /* Clean emerald green */
-  --color-whatsapp-hover: #15803d;
-  --color-bg: #f8fafc;            /* Crisp off-white */
-  --color-bg-alt: #f1f5f9;        /* Light contrast background */
-  --color-card-bg: #ffffff;
-  --color-border: #e2e8f0;
-  --color-border-subtle: #f1f5f9;
+  --font-serif: 'Playfair Display', Georgia, serif;
+  --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+
+  /* Eye-Comfort Warm Colors */
+  --bg-main: #f7f5ef;             /* Soothing warm parchment background */
+  --bg-card: #ffffff;             /* Clean ivory card */
+  --bg-section-alt: #ece8dd;      /* Warm stone contrast section */
+  --bg-dark: #0d1b2a;             /* Deep Oxford midnight navy */
+  --bg-dark-soft: #1b2a3d;        /* Muted navy accent */
+
+  /* Text Colors (Never 100% harsh black) */
+  --text-dark: #1e252d;           /* Rich charcoal */
+  --text-muted: #56616d;          /* Soft slate */
+  --text-light: #e0e6ed;          /* Soft off-white for dark areas */
+
+  /* High-Trust Accents */
+  --accent-gold: #c59b27;         /* Warm legal brass */
+  --accent-gold-light: #f5eed8;   /* Soft badge gold */
+  --accent-gold-hover: #a37c17;
+  --accent-green: #15803d;        /* Deep trusted emerald */
+  --accent-green-bg: #e6f4ea;
+  --color-whatsapp: #25d366;
+  --color-whatsapp-hover: #1ebd5b;
+
+  --border-warm: #dfd9cb;
+  --border-subtle: #eae5d9;
+
   --radius-sm: 8px;
   --radius-md: 14px;
-  --radius-lg: 20px;
-  --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.04);
-  --shadow-md: 0 4px 20px -2px rgba(15, 23, 42, 0.06);
-  --shadow-lg: 0 12px 30px -4px rgba(15, 23, 42, 0.08);
+  --radius-lg: 22px;
+  --shadow-soft: 0 4px 20px -2px rgba(27, 38, 59, 0.06);
+  --shadow-hover: 0 14px 32px -4px rgba(27, 38, 59, 0.12);
 }
 
+/* --------------------------------------------------
+   Reset & Base Typography
+   -------------------------------------------------- */
 *, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
@@ -34,28 +52,36 @@ html {
 }
 
 body {
-  font-family: var(--font-base);
-  background-color: var(--color-bg);
-  color: var(--color-primary-soft);
-  line-height: 1.6;
+  font-family: var(--font-sans);
+  background-color: var(--bg-main);
+  color: var(--text-dark);
+  line-height: 1.65;
   -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-serif);
+  color: var(--text-dark);
+  font-weight: 700;
+  letter-spacing: -0.01em;
 }
 
 .container {
   width: 100%;
-  max-width: 1140px;
+  max-width: 1180px;
   margin: 0 auto;
-  padding: 0 1.25rem;
+  padding: 0 1.5rem;
 }
 
 /* --------------------------------------------------
-   Top Status Bar
+   Top Status Bar (Smart Real-Time Pulse)
    -------------------------------------------------- */
 .top-bar {
-  background-color: #ffffff;
-  border-bottom: 1px solid var(--color-border);
+  background-color: var(--bg-dark);
+  color: var(--text-light);
   font-size: 0.85rem;
-  padding: 0.6rem 0;
+  padding: 0.65rem 0;
+  border-bottom: 1px solid rgba(197, 155, 39, 0.25);
 }
 
 .top-bar-content {
@@ -63,41 +89,57 @@ body {
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
-  gap: 0.5rem;
+  gap: 0.75rem;
 }
 
 .status-badge {
   display: inline-flex;
   align-items: center;
-  gap: 0.35rem;
+  gap: 0.5rem;
   font-weight: 600;
-  padding: 0.25rem 0.75rem;
+  padding: 0.3rem 0.85rem;
   border-radius: 9999px;
-  background-color: var(--color-bg-alt);
+  background-color: var(--bg-dark-soft);
+  font-size: 0.8rem;
 }
 
-.status-badge.open {
-  background-color: #dcfce7;
-  color: #15803d;
+/* Live Radar Pulse Indicator */
+.pulse-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  display: inline-block;
+  position: relative;
 }
 
-.status-badge.closed {
-  background-color: #fee2e2;
-  color: #b91c1c;
+.status-badge.open .pulse-dot {
+  background-color: #22c55e;
+  box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7);
+  animation: pulse-green 2s infinite;
+}
+
+.status-badge.closed .pulse-dot {
+  background-color: #ef4444;
+}
+
+@keyframes pulse-green {
+  0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); }
+  70% { transform: scale(1); box-shadow: 0 0 0 8px rgba(34, 197, 94, 0); }
+  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
 }
 
 .office-location {
-  color: var(--color-primary-soft);
-  font-weight: 500;
+  color: #cbd5e1;
+  font-size: 0.85rem;
 }
 
 /* --------------------------------------------------
-   Header Navigation
+   Header
    -------------------------------------------------- */
 .site-header {
-  background-color: rgba(255, 255, 255, 0.9);
+  background-color: rgba(247, 245, 239, 0.94);
   backdrop-filter: blur(12px);
-  border-bottom: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--border-warm);
   position: sticky;
   top: 0;
   z-index: 50;
@@ -107,67 +149,70 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding-top: 1rem;
-  padding-bottom: 1rem;
+  padding: 1.25rem 1.5rem;
   flex-wrap: wrap;
   gap: 1rem;
 }
 
 .logo-title {
-  font-size: 1.35rem;
+  font-size: 1.45rem;
+  color: var(--bg-dark);
   font-weight: 800;
-  color: var(--color-primary);
-  letter-spacing: -0.02em;
+  letter-spacing: 0.02em;
 }
 
 .logo-subtitle {
+  font-family: var(--font-sans);
   font-size: 0.8rem;
-  color: var(--color-accent);
+  color: var(--accent-gold-hover);
   font-weight: 600;
+  margin-top: 2px;
 }
 
 .nav-links {
   display: flex;
-  gap: 1.5rem;
+  gap: 1.75rem;
 }
 
 .nav-links a {
   text-decoration: none;
-  color: var(--color-primary-soft);
+  color: var(--text-dark);
   font-weight: 600;
   font-size: 0.95rem;
-  transition: color 0.2s;
+  transition: color 0.2s ease;
 }
 
 .nav-links a:hover {
-  color: var(--color-accent);
+  color: var(--accent-gold);
 }
 
 /* --------------------------------------------------
-   Buttons
+   Buttons & Interactive Elements
    -------------------------------------------------- */
 .btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0.45rem;
-  padding: 0.7rem 1.35rem;
+  gap: 0.5rem;
+  padding: 0.75rem 1.4rem;
   font-size: 0.95rem;
   font-weight: 600;
   border-radius: var(--radius-sm);
   text-decoration: none;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.25s ease;
   border: 1px solid transparent;
+  font-family: var(--font-sans);
 }
 
 .btn-call {
-  background-color: var(--color-primary);
+  background-color: var(--bg-dark);
   color: #ffffff;
 }
 
 .btn-call:hover {
-  background-color: #1e293b;
+  background-color: var(--bg-dark-soft);
+  transform: translateY(-1px);
 }
 
 .btn-whatsapp {
@@ -177,29 +222,25 @@ body {
 
 .btn-whatsapp:hover {
   background-color: var(--color-whatsapp-hover);
+  box-shadow: 0 6px 16px rgba(37, 211, 102, 0.3);
 }
 
 .btn-outline {
-  border-color: var(--color-border);
-  color: var(--color-primary);
+  border-color: var(--border-warm);
+  color: var(--text-dark);
   background-color: #ffffff;
 }
 
 .btn-outline:hover {
-  border-color: var(--color-accent);
-  color: var(--color-accent);
+  border-color: var(--accent-gold);
+  color: var(--accent-gold-hover);
+  background-color: #fdfbf7;
 }
 
-.btn-copy {
-  background-color: var(--color-bg-alt);
-  color: var(--color-primary);
-  border: 1px solid var(--color-border);
+.btn-sm {
   padding: 0.45rem 0.9rem;
   font-size: 0.85rem;
-}
-
-.btn-copy:hover {
-  background-color: #e2e8f0;
+  border-radius: 6px;
 }
 
 .full-width {
@@ -207,353 +248,383 @@ body {
 }
 
 /* --------------------------------------------------
-   Hero Section (Light & Crisp)
+   Hero Section (Deep Midnight Oxford Elegance)
    -------------------------------------------------- */
 .hero-section {
-  background: linear-gradient(180deg, #ffffff 0%, var(--color-bg) 100%);
-  padding: 4.5rem 0 3.5rem 0;
-  border-bottom: 1px solid var(--color-border);
+  background: radial-gradient(circle at 80% 20%, #1e334a 0%, var(--bg-dark) 80%);
+  color: #ffffff;
+  padding: 5.5rem 0 5rem 0; /* Comfortable breathing room */
+  border-bottom: 3px solid var(--accent-gold);
 }
 
 .hero-content {
-  max-width: 820px;
+  max-width: 840px;
 }
 
 .hero-badge {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  background-color: var(--color-accent-light);
-  color: var(--color-accent);
-  padding: 0.35rem 0.85rem;
+  background-color: rgba(197, 155, 39, 0.18);
+  border: 1px solid rgba(197, 155, 39, 0.4);
+  color: #fce79a;
+  padding: 0.4rem 0.95rem;
   border-radius: 9999px;
   font-size: 0.85rem;
-  font-weight: 700;
-  margin-bottom: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
 }
 
 .hero-title {
-  font-size: 2.5rem;
-  font-weight: 800;
-  line-height: 1.25;
-  color: var(--color-primary);
-  letter-spacing: -0.025em;
-  margin-bottom: 1.25rem;
+  font-size: 2.85rem;
+  line-height: 1.2;
+  color: #ffffff;
+  margin-bottom: 1.35rem;
 }
 
 .hero-desc {
-  font-size: 1.125rem;
-  color: var(--color-primary-soft);
-  margin-bottom: 2rem;
-  max-width: 720px;
+  font-size: 1.15rem;
+  color: #cbd5e1;
+  margin-bottom: 2.25rem;
+  max-width: 740px;
+  line-height: 1.7;
 }
 
 .hero-actions {
   display: flex;
-  gap: 1rem;
+  gap: 1.15rem;
   flex-wrap: wrap;
 }
 
+.hero-actions .btn-outline {
+  background-color: transparent;
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.35);
+}
+
+.hero-actions .btn-outline:hover {
+  background-color: #ffffff;
+  color: var(--bg-dark);
+}
+
 /* --------------------------------------------------
-   Section Layouts
+   Section Spacing & Headers
    -------------------------------------------------- */
 .section {
-  padding: 4.5rem 0;
+  padding: 5.5rem 0; /* Generous breathing room across all sections */
 }
 
 .section-header {
   text-align: center;
-  max-width: 720px;
-  margin: 0 auto 2.5rem auto;
+  max-width: 760px;
+  margin: 0 auto 3rem auto;
 }
 
 .section-subtitle {
-  color: var(--color-accent);
+  color: var(--accent-gold-hover);
   font-size: 0.85rem;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.1em;
 }
 
 .section-title {
-  font-size: 1.95rem;
-  font-weight: 800;
-  color: var(--color-primary);
-  margin-top: 0.35rem;
-  letter-spacing: -0.02em;
+  font-size: 2.2rem;
+  color: var(--bg-dark);
+  margin-top: 0.4rem;
 }
 
 .section-lead {
-  color: var(--color-primary-soft);
-  margin-top: 0.5rem;
-  font-size: 1rem;
+  color: var(--text-muted);
+  margin-top: 0.75rem;
+  font-size: 1.05rem;
 }
 
 /* --------------------------------------------------
-   Service Search & Cards
+   Services Grid & Search
    -------------------------------------------------- */
+.services-section {
+  background-color: var(--bg-main);
+}
+
 .service-search-box {
-  max-width: 480px;
-  margin: 0 auto 2.5rem auto;
+  max-width: 520px;
+  margin: 0 auto 3rem auto;
 }
 
 .service-search-box input {
   width: 100%;
-  padding: 0.85rem 1.25rem;
+  padding: 0.95rem 1.4rem;
   font-size: 1rem;
-  border: 1px solid var(--color-border);
+  border: 1px solid var(--border-warm);
   border-radius: 9999px;
   outline: none;
-  background-color: #ffffff;
-  box-shadow: var(--shadow-sm);
+  background-color: var(--bg-card);
+  box-shadow: var(--shadow-soft);
+  color: var(--text-dark);
   transition: all 0.2s ease;
 }
 
 .service-search-box input:focus {
-  border-color: var(--color-accent);
-  box-shadow: 0 0 0 4px rgba(180, 83, 9, 0.12);
+  border-color: var(--accent-gold);
+  box-shadow: 0 0 0 4px rgba(197, 155, 39, 0.15);
 }
 
 .services-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+  gap: 1.75rem;
 }
 
 .service-card {
-  background-color: var(--color-card-bg);
-  border: 1px solid var(--color-border);
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-warm);
   border-radius: var(--radius-md);
-  padding: 1.75rem 1.5rem;
+  padding: 2.2rem 1.8rem; /* Comfortable internal card padding */
   display: flex;
   flex-direction: column;
-  box-shadow: var(--shadow-sm);
-  transition: all 0.2s ease;
+  box-shadow: var(--shadow-soft);
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
 }
 
 .service-card:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-lg);
-  border-color: var(--color-accent);
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-hover);
+  border-color: var(--accent-gold);
 }
 
 .service-icon {
-  font-size: 2.2rem;
-  margin-bottom: 0.85rem;
+  font-size: 2.3rem;
+  margin-bottom: 1.1rem;
 }
 
 .service-card h4 {
-  font-size: 1.15rem;
-  font-weight: 700;
-  color: var(--color-primary);
-  margin-bottom: 0.5rem;
+  font-size: 1.25rem;
+  color: var(--bg-dark);
+  margin-bottom: 0.65rem;
 }
 
 .service-card p {
-  color: var(--color-primary-soft);
-  font-size: 0.9rem;
-  line-height: 1.55;
-  margin-bottom: 1.25rem;
+  color: var(--text-muted);
+  font-size: 0.93rem;
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
   flex: 1;
 }
 
 .service-inquiry-link {
   display: inline-flex;
   align-items: center;
-  gap: 0.35rem;
-  color: var(--color-whatsapp);
+  gap: 0.4rem;
+  color: var(--accent-green);
   text-decoration: none;
   font-weight: 700;
-  font-size: 0.85rem;
-  border-top: 1px solid var(--color-border-subtle);
-  padding-top: 0.85rem;
+  font-size: 0.88rem;
+  border-top: 1px solid var(--border-subtle);
+  padding-top: 1rem;
+  transition: color 0.2s;
 }
 
 .service-inquiry-link:hover {
-  text-decoration: underline;
+  color: var(--accent-gold-hover);
 }
 
 /* --------------------------------------------------
-   Interactive Document Checklist
+   Interactive Document Checklist (Warm Stone Section)
    -------------------------------------------------- */
 .documents-section {
-  background-color: var(--color-bg-alt);
+  background-color: var(--bg-section-alt);
+  border-top: 1px solid var(--border-warm);
+  border-bottom: 1px solid var(--border-warm);
 }
 
 .checklist-interactive {
-  max-width: 820px;
+  max-width: 860px;
   margin: 0 auto;
 }
 
 .tab-controls {
   display: flex;
-  gap: 0.5rem;
+  gap: 0.65rem;
   flex-wrap: wrap;
   justify-content: center;
-  margin-bottom: 1.5rem;
+  margin-bottom: 2rem;
 }
 
 .tab-btn {
-  background-color: #ffffff;
-  border: 1px solid var(--color-border);
-  padding: 0.7rem 1.25rem;
-  font-size: 0.9rem;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-warm);
+  padding: 0.75rem 1.35rem;
+  font-size: 0.92rem;
   font-weight: 600;
   border-radius: 9999px;
-  color: var(--color-primary-soft);
+  color: var(--text-dark);
   cursor: pointer;
-  box-shadow: var(--shadow-sm);
+  box-shadow: var(--shadow-soft);
   transition: all 0.2s ease;
+  font-family: var(--font-sans);
 }
 
 .tab-btn:hover {
-  border-color: var(--color-accent);
-  color: var(--color-accent);
+  border-color: var(--accent-gold);
+  color: var(--accent-gold-hover);
 }
 
 .tab-btn.active {
-  background-color: var(--color-primary);
+  background-color: var(--bg-dark);
   color: #ffffff;
-  border-color: var(--color-primary);
+  border-color: var(--bg-dark);
 }
 
 .checklist-card {
-  background-color: #ffffff;
-  border: 1px solid var(--color-border);
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-warm);
   border-radius: var(--radius-lg);
-  padding: 2.25rem;
-  box-shadow: var(--shadow-md);
+  padding: 2.6rem 2.2rem;
+  box-shadow: var(--shadow-soft);
 }
 
 .checklist-header {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  gap: 1rem;
-  border-bottom: 1px solid var(--color-border);
-  padding-bottom: 1rem;
-  margin-bottom: 1rem;
+  gap: 1.25rem;
+  border-bottom: 1px solid var(--border-subtle);
+  padding-bottom: 1.25rem;
+  margin-bottom: 1.25rem;
   flex-wrap: wrap;
 }
 
 .checklist-header h4 {
-  font-size: 1.3rem;
-  color: var(--color-primary);
+  font-size: 1.35rem;
+  color: var(--bg-dark);
+}
+
+.checklist-actions {
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
 }
 
 .checklist-note {
-  color: var(--color-accent);
-  font-size: 0.9rem;
+  color: var(--accent-gold-hover);
+  font-size: 0.92rem;
   font-weight: 600;
-  margin-bottom: 1.25rem;
+  margin-bottom: 1.5rem;
 }
 
 .checklist-items {
   list-style: none;
   display: flex;
   flex-direction: column;
-  gap: 0.85rem;
+  gap: 0.95rem;
 }
 
 .checklist-items li {
   position: relative;
-  padding-left: 1.85rem;
-  font-size: 0.95rem;
-  color: var(--color-primary-soft);
+  padding-left: 2rem;
+  font-size: 0.98rem;
+  color: var(--text-dark);
 }
 
 .checklist-items li::before {
-  content: "✔";
+  content: "✦";
   position: absolute;
   left: 0;
-  color: var(--color-accent);
-  font-weight: 800;
+  color: var(--accent-gold);
+  font-size: 1.1rem;
 }
 
 /* --------------------------------------------------
    Contact & Location
    -------------------------------------------------- */
 .contact-section {
-  background-color: #ffffff;
+  background-color: var(--bg-main);
 }
 
 .contact-layout {
   display: grid;
   grid-template-columns: 1.2fr 1fr;
-  gap: 2rem;
+  gap: 2.5rem;
 }
 
 .contact-info-card {
-  background-color: var(--color-bg);
-  border: 1px solid var(--color-border);
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-warm);
   border-radius: var(--radius-lg);
-  padding: 2.25rem;
+  padding: 2.6rem 2.2rem;
+  box-shadow: var(--shadow-soft);
 }
 
 .contact-info-card h4 {
-  font-size: 1.3rem;
-  color: var(--color-primary);
-  margin-bottom: 1.5rem;
+  font-size: 1.45rem;
+  color: var(--bg-dark);
+  margin-bottom: 1.75rem;
 }
 
 .contact-list {
   list-style: none;
   display: flex;
   flex-direction: column;
-  gap: 1.2rem;
+  gap: 1.35rem;
   margin-bottom: 2rem;
 }
 
 .contact-list li {
   display: flex;
   flex-direction: column;
-  gap: 0.2rem;
+  gap: 0.25rem;
 }
 
 .contact-list strong {
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: var(--color-accent);
+  letter-spacing: 0.08em;
+  color: var(--accent-gold-hover);
+  font-weight: 700;
 }
 
 .contact-list span, .contact-link {
-  font-size: 0.95rem;
-  color: var(--color-primary-soft);
+  font-size: 0.98rem;
+  color: var(--text-dark);
 }
 
 .contact-link {
   text-decoration: none;
   font-weight: 600;
-  color: var(--color-primary);
+  color: var(--bg-dark);
+  transition: color 0.2s;
 }
 
 .contact-link:hover {
-  color: var(--color-accent);
+  color: var(--accent-gold);
 }
 
 .map-card {
-  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  background: radial-gradient(circle at top right, #1e334a 0%, var(--bg-dark) 100%);
   color: #ffffff;
   border-radius: var(--radius-lg);
-  padding: 2.5rem 2rem;
+  padding: 3rem 2.2rem;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   text-align: center;
-  gap: 1.25rem;
-  box-shadow: var(--shadow-md);
+  gap: 1.35rem;
+  box-shadow: var(--shadow-soft);
+  border: 1px solid rgba(197, 155, 39, 0.3);
 }
 
 .map-card h4 {
-  font-size: 1.35rem;
+  color: #ffffff;
+  font-size: 1.5rem;
 }
 
 .map-card p {
   color: #cbd5e1;
-  font-size: 0.95rem;
-  max-width: 320px;
+  font-size: 1rem;
+  max-width: 340px;
+  line-height: 1.6;
 }
 
 /* --------------------------------------------------
@@ -561,57 +632,63 @@ body {
    -------------------------------------------------- */
 .floating-whatsapp {
   position: fixed;
-  bottom: 1.5rem;
-  right: 1.5rem;
-  width: 58px;
-  height: 58px;
+  bottom: 1.8rem;
+  right: 1.8rem;
+  width: 60px;
+  height: 60px;
   border-radius: 50%;
   background-color: var(--color-whatsapp);
   color: #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.75rem;
-  box-shadow: 0 6px 18px rgba(22, 163, 74, 0.35);
+  font-size: 1.85rem;
+  box-shadow: 0 8px 24px rgba(37, 211, 102, 0.4);
   text-decoration: none;
   z-index: 100;
-  transition: transform 0.2s ease, background-color 0.2s ease;
+  transition: transform 0.25s ease, background-color 0.25s ease;
 }
 
 .floating-whatsapp:hover {
   background-color: var(--color-whatsapp-hover);
-  transform: scale(1.08);
+  transform: scale(1.1);
 }
 
 /* --------------------------------------------------
    Footer
    -------------------------------------------------- */
 .site-footer {
-  background-color: #ffffff;
-  color: var(--color-primary-soft);
-  font-size: 0.85rem;
-  padding: 2.5rem 0;
+  background-color: var(--bg-dark);
+  color: #94a3b8;
+  font-size: 0.88rem;
+  padding: 3rem 0;
   text-align: center;
-  border-top: 1px solid var(--color-border);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .footer-content {
   display: flex;
   flex-direction: column;
-  gap: 0.4rem;
+  gap: 0.5rem;
 }
 
 /* --------------------------------------------------
-   Mobile Responsive
+   Mobile Responsive Adjustments
    -------------------------------------------------- */
-@media (max-width: 820px) {
+@media (max-width: 840px) {
+  .hero-title {
+    font-size: 2.1rem;
+  }
+  .section {
+    padding: 4rem 0;
+  }
   .contact-layout {
     grid-template-columns: 1fr;
   }
   .nav-links {
     display: none;
   }
-  .hero-title {
-    font-size: 1.85rem;
+  .checklist-card, .contact-info-card {
+    padding: 1.8rem 1.4rem;
   }
 }
