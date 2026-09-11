@@ -2,7 +2,7 @@
 const checklistData = {
   sale: {
     title: "Required Documents for Sale Deed (बैनामा / विक्रय पत्र)",
-    note: "All parties (Buyer, Seller, and 2 Witnesses) must carry original photo IDs.",
+    note: "All parties (Buyer, Seller, and 2 Witnesses) must carry original government photo IDs.",
     items: [
       "Original Title Document / Chain of Deeds (मूल पट्टा, रजिस्ट्री या आवंटन पत्र)",
       "Aadhaar Card and PAN Card of both Seller and Buyer",
@@ -51,10 +51,11 @@ const checklistData = {
 
 let currentChecklistType = "sale";
 
-// --- Dynamic Office Hours Status (9:30 AM to 9:30 PM IST) ---
+// --- Smart Real-Time Office Radar Logic (9:30 AM – 9:30 PM IST) ---
 function updateOfficeStatus() {
-  const statusBadge = document.getElementById("office-status");
-  if (!statusBadge) return;
+  const badge = document.getElementById("office-status");
+  const textElem = document.getElementById("status-text");
+  if (!badge || !textElem) return;
 
   const now = new Date();
   const options = { timeZone: "Asia/Kolkata", hour12: false, weekday: "short", hour: "numeric", minute: "numeric" };
@@ -76,17 +77,19 @@ function updateOfficeStatus() {
 
   // Mon–Sat: 9:30 AM (9.5) to 9:30 PM (21.5)
   if (!isSunday && currentDecHour >= 9.5 && currentDecHour < 21.5) {
-    statusBadge.textContent = "🟢 Office Open (9:30 AM – 9:30 PM)";
-    statusBadge.className = "status-badge open";
+    const hoursLeft = Math.floor(21.5 - currentDecHour);
+    const minsLeft = Math.round(((21.5 - currentDecHour) - hoursLeft) * 60);
+    badge.className = "status-badge open";
+    textElem.textContent = `Open Now • Closes in ${hoursLeft}h ${minsLeft}m (9:30 PM)`;
   } else {
-    statusBadge.textContent = isSunday 
-      ? "🔴 Closed Today (Available on Call / By Appointment)"
-      : "🔴 Office Closed (Opens Tomorrow at 9:30 AM)";
-    statusBadge.className = "status-badge closed";
+    badge.className = "status-badge closed";
+    textElem.textContent = isSunday 
+      ? "Closed Today (Sunday) • Available by Appointment" 
+      : "Closed Now • Opens Tomorrow at 9:30 AM";
   }
 }
 
-// --- Render Checklist with "Copy Checklist" Action ---
+// --- Render Checklist with Clipboard & WhatsApp Sharing ---
 function renderChecklist(type) {
   currentChecklistType = type;
   const container = document.getElementById("checklist-result");
@@ -101,27 +104,43 @@ function renderChecklist(type) {
         <h4>${data.title}</h4>
         <p class="checklist-note">${data.note}</p>
       </div>
-      <button type="button" id="copy-checklist-btn" class="btn btn-copy">📋 Copy Checklist</button>
+      <div class="checklist-actions">
+        <button type="button" id="copy-checklist-btn" class="btn btn-outline btn-sm">📋 Copy List</button>
+        <button type="button" id="share-wa-btn" class="btn btn-whatsapp btn-sm">💬 Share on WhatsApp</button>
+      </div>
     </div>
     <ul class="checklist-items">
       ${itemsHtml}
     </ul>
   `;
 
-  // Attach clipboard copy handler
+  // 1. Copy to clipboard
   const copyBtn = document.getElementById("copy-checklist-btn");
   if (copyBtn) {
     copyBtn.addEventListener("click", () => {
-      const textToCopy = `${data.title}\n\nNote: ${data.note}\n\nRequired Documents:\n` +
+      const textToShare = `${data.title}\n\nNote: ${data.note}\n\nRequired Documents:\n` +
         data.items.map((it, idx) => `${idx + 1}. ${it}`).join("\n") +
         `\n\nOffice: Vishwakarma Computers, Opp. SBI Bank, Nagar Nigam Road, Sanganer, Jaipur.`;
 
-      navigator.clipboard.writeText(textToCopy).then(() => {
+      navigator.clipboard.writeText(textToShare).then(() => {
         copyBtn.textContent = "✅ Copied!";
         setTimeout(() => {
-          copyBtn.textContent = "📋 Copy Checklist";
+          copyBtn.textContent = "📋 Copy List";
         }, 2000);
       });
+    });
+  }
+
+  // 2. Direct Share to WhatsApp
+  const shareBtn = document.getElementById("share-wa-btn");
+  if (shareBtn) {
+    shareBtn.addEventListener("click", () => {
+      const textToShare = `${data.title}\n\nNote: ${data.note}\n\nRequired Documents:\n` +
+        data.items.map((it, idx) => `${idx + 1}. ${it}`).join("\n") +
+        `\n\nOffice: Vishwakarma Computers, Opp. SBI Bank, Nagar Nigam Road, Sanganer, Jaipur.`;
+
+      const waUrl = `https://wa.me/?text=${encodeURIComponent(textToShare)}`;
+      window.open(waUrl, "_blank");
     });
   }
 }
@@ -156,6 +175,8 @@ function init() {
   }
 
   updateOfficeStatus();
+  setInterval(updateOfficeStatus, 60000); // Check every minute in real time
+
   renderChecklist("sale");
   setupServiceSearch();
 
