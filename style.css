@@ -170,8 +170,99 @@ h1, h2, h3, h4 {
 }
 
 /* --------------------------------------------------
-   Ultra-Modern Pill Navigation & Glass Menu
+   Header Grouping & Architectural 3-Line Menu Trigger
    -------------------------------------------------- */
+.header-left-group {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+/* Tactile 3-Line Button */
+.menu-trigger-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  background-color: var(--bg-card);
+  border: 1.5px solid var(--border-warm);
+  padding: 0.6rem 1.05rem;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  box-shadow: var(--shadow-soft);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.menu-trigger-btn:hover,
+.menu-trigger-btn[aria-expanded="true"] {
+  border-color: var(--accent-gold);
+  background-color: #ffffff;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(197, 155, 39, 0.18);
+}
+
+/* Animated Micro 3-Line Bars */
+.hamburger-box {
+  width: 20px;
+  height: 14px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.hamburger-line {
+  display: block;
+  height: 2px;
+  border-radius: 2px;
+  background-color: var(--bg-dark);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.hamburger-line.line-1 {
+  width: 100%;
+}
+
+.hamburger-line.line-2 {
+  width: 65%; /* Sleek asymmetric modern bar */
+  background-color: var(--accent-gold);
+}
+
+.hamburger-line.line-3 {
+  width: 85%;
+}
+
+/* Hover & Active Transformations */
+.menu-trigger-btn:hover .hamburger-line.line-2,
+.menu-trigger-btn[aria-expanded="true"] .hamburger-line.line-2 {
+  width: 100%;
+  background-color: var(--accent-gold-hover);
+}
+
+.menu-trigger-btn[aria-expanded="true"] .hamburger-line.line-1 {
+  transform: translateY(6px) rotate(45deg);
+}
+
+.menu-trigger-btn[aria-expanded="true"] .hamburger-line.line-2 {
+  opacity: 0;
+}
+
+.menu-trigger-btn[aria-expanded="true"] .hamburger-line.line-3 {
+  transform: translateY(-6px) rotate(-45deg);
+}
+
+.menu-label {
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--bg-dark);
+}
+
+.menu-trigger-btn:hover .menu-label {
+  color: var(--accent-gold-hover);
+}
+
+/* Right Nav Links */
 .nav-links {
   display: flex;
   align-items: center;
@@ -184,8 +275,8 @@ h1, h2, h3, h4 {
   font-weight: 600;
   font-size: 0.92rem;
   padding: 0.5rem 0.85rem;
-  border-radius: 9999px;
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  border-radius: var(--radius-sm);
+  transition: all 0.2s ease;
 }
 
 .nav-link-subtle:hover {
@@ -193,31 +284,18 @@ h1, h2, h3, h4 {
   color: var(--accent-gold-hover);
 }
 
-/* Glassmorphic Pill Button Trigger */
-.nav-pill-btn {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(247, 245, 239, 0.8));
-  border: 1px solid rgba(197, 155, 39, 0.35);
-  padding: 0.55rem 1.15rem;
-  border-radius: 9999px;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.6rem;
-  cursor: pointer;
-  font-family: var(--font-sans);
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: var(--bg-dark);
-  box-shadow: 0 2px 10px rgba(13, 27, 42, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.8);
-  backdrop-filter: blur(8px);
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+/* Responsive Handling */
+@media (max-width: 900px) {
+  .header-container {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  .header-left-group {
+    width: 100%;
+    justify-content: flex-start;
+  }
 }
-
-.nav-pill-btn:hover {
-  border-color: var(--accent-gold);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 16px rgba(197, 155, 39, 0.2);
-}
-
 /* Status Indicator Dot inside the Pill */
 .nav-pill-dot {
   width: 7px;
