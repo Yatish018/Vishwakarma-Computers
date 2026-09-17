@@ -49,15 +49,24 @@ const checklistData = {
   }
 };
 
-let currentChecklistType = "sale";
-
-// --- Smart Real-Time Office Radar Logic (9:30 AM – 9:30 PM IST) ---
+// --- Live Ticking Clock & Office Status (Mon–Sat: 9:30 AM – 9:30 PM IST) ---
 function updateOfficeStatus() {
   const badge = document.getElementById("office-status");
   const textElem = document.getElementById("status-text");
   if (!badge || !textElem) return;
 
   const now = new Date();
+  
+  // Format current live time in Jaipur (IST)
+  const timeString = now.toLocaleTimeString("en-IN", {
+    timeZone: "Asia/Kolkata",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: true
+  });
+
+  // Calculate day and hours in IST
   const options = { timeZone: "Asia/Kolkata", hour12: false, weekday: "short", hour: "numeric", minute: "numeric" };
   const formatter = new Intl.DateTimeFormat("en-US", options);
   const parts = formatter.formatToParts(now);
@@ -77,21 +86,18 @@ function updateOfficeStatus() {
 
   // Mon–Sat: 9:30 AM (9.5) to 9:30 PM (21.5)
   if (!isSunday && currentDecHour >= 9.5 && currentDecHour < 21.5) {
-    const hoursLeft = Math.floor(21.5 - currentDecHour);
-    const minsLeft = Math.round(((21.5 - currentDecHour) - hoursLeft) * 60);
     badge.className = "status-badge open";
-    textElem.textContent = `Open Now • Closes in ${hoursLeft}h ${minsLeft}m (9:30 PM)`;
+    textElem.textContent = `Open Now • ${timeString} IST (9:30 AM – 9:30 PM)`;
   } else {
     badge.className = "status-badge closed";
     textElem.textContent = isSunday 
-      ? "Closed Today (Sunday) • Available by Appointment" 
-      : "Closed Now • Opens Tomorrow at 9:30 AM";
+      ? `Closed Today (Sunday) • ${timeString} IST` 
+      : `Closed Now • ${timeString} IST (Opens 9:30 AM)`;
   }
 }
 
 // --- Render Checklist with Clipboard & WhatsApp Sharing ---
 function renderChecklist(type) {
-  currentChecklistType = type;
   const container = document.getElementById("checklist-result");
   const data = checklistData[type];
   if (!container || !data) return;
@@ -175,7 +181,7 @@ function init() {
   }
 
   updateOfficeStatus();
-  setInterval(updateOfficeStatus, 60000); // Check every minute in real time
+  setInterval(updateOfficeStatus, 1000); // Live ticking every second
 
   renderChecklist("sale");
   setupServiceSearch();
