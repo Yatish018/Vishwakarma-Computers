@@ -169,9 +169,13 @@ h1, h2, h3, h4 {
   margin-top: 2px;
 }
 
+/* --------------------------------------------------
+   Navigation Links & Bootstrap Dropdown
+   -------------------------------------------------- */
 .nav-links {
   display: flex;
-  gap: 1.75rem;
+  align-items: center;
+  gap: 1.5rem;
 }
 
 .nav-links a {
@@ -184,6 +188,56 @@ h1, h2, h3, h4 {
 
 .nav-links a:hover {
   color: var(--accent-gold);
+}
+
+.nav-dropdown-btn {
+  background: transparent;
+  border: none;
+  font-family: var(--font-sans);
+  color: var(--text-dark);
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  transition: color 0.2s ease;
+}
+
+.nav-dropdown-btn:hover,
+.nav-dropdown-btn:focus {
+  color: var(--accent-gold);
+}
+
+.custom-dropdown {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-warm);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-hover);
+  padding: 0.65rem 0.4rem;
+  min-width: 290px;
+  margin-top: 0.6rem !important;
+  z-index: 1050;
+}
+
+.custom-dropdown .dropdown-item {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text-dark);
+  padding: 0.55rem 0.9rem;
+  border-radius: var(--radius-sm);
+  transition: all 0.15s ease;
+}
+
+.custom-dropdown .dropdown-item:hover {
+  background-color: var(--accent-gold-light);
+  color: var(--accent-gold-hover);
+  transform: translateX(3px);
+}
+
+.custom-dropdown .dropdown-divider {
+  border-color: var(--border-warm);
+  margin: 0.45rem 0;
 }
 
 /* --------------------------------------------------
