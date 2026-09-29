@@ -1,273 +1,115 @@
-"use strict";
-const PHONE = "919829017080";
-const ADDR = "Vishwakarma Computers, Opp. SBI Bank, Nagar Nigam Road, Sanganer, Jaipur 302029";
-const $ = (s) => document.querySelector(s);
-const wa = (t) => `https://wa.me/${PHONE}?text=${encodeURIComponent(t)}`;
-let lang = "en";
-try { lang = localStorage.getItem("lang") || "en"; } catch (e) {}
-const L = (o) => o[lang];
+/* Vishwakarma Computers — stamp-paper green, ink blue, seal red */
+:root{--r:10px;--green:#137a45;--red:#b3261e;--p:#1b2a6b;--pd:#8fa4ff;--tint:#eef3ea;--acc:#a9822b;--brass:var(--acc);--ink:#16203f;--muted:#55607a;--card:#fbfcf9;--line:#cfd8c8;--paper:var(--tint);--blue:var(--p)}
+[data-pal=rose]{--p:#9d2450;--pd:#ff8fb3;--tint:#fbeff2;--acc:#c98a1b}
+[data-pal=forest]{--p:#0f5c4a;--pd:#5fd6b0;--tint:#eaf4ef;--acc:#b08a2e}
+[data-pal=saffron]{--p:#b14a0a;--pd:#ffa45c;--tint:#fdf1e3;--acc:#2a6bb0}
+[data-mode=dark]{--ink:#e9edf7;--muted:#a3adc6;--card:#151e36;--line:#2a3555;--paper:#0e1526;--blue:var(--pd);--red:#ff7a70}
+*{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:80px}
+body{margin:0;background:var(--paper);color:var(--ink);font:400 1.0625rem/1.65 Hind,system-ui,sans-serif}
+h1,h2,.brand strong,.seal b{font-family:"Noto Serif Devanagari",Georgia,serif;line-height:1.3;margin:0}
+a{color:inherit}.wrap{width:min(1080px,92%);margin:auto}.narrow{width:min(620px,92%)}
+.skip{position:absolute;left:-999px}.skip:focus{left:8px;top:8px;background:var(--card);padding:8px 12px;z-index:99}
+:focus-visible{outline:3px solid var(--brass);outline-offset:2px}
+.topbar{background:var(--p);color:#fff;font-size:.9rem}.topbar-in{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:6px 0}
+.status{display:flex;align-items:center;gap:8px}.dot{width:9px;height:9px;border-radius:50%;background:#999}
+.status.open .dot{background:#3ddc84;box-shadow:0 0 0 0 #3ddc84;animation:pulse 2s infinite}.status.closed .dot{background:#ff8a80}
+@keyframes pulse{70%{box-shadow:0 0 0 8px transparent}}
+.lang{display:flex;border:1px solid rgba(255,255,255,.45);border-radius:99px;overflow:hidden}
+.lang button{background:none;border:0;color:#fff;padding:3px 12px;font:inherit;cursor:pointer}
+.lang button[aria-pressed=true]{background:#fff;color:var(--blue);font-weight:600}
+.site-header{position:sticky;top:0;z-index:20;background:var(--card);border-bottom:1px solid var(--line)}
+.head-in{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:10px 0}
+.brand{text-decoration:none;display:grid}.brand strong{font-size:1.2rem;color:var(--blue)}.brand small{color:var(--muted);font-size:.82rem}
+.nav{display:flex;align-items:center;gap:22px}.nav a:not(.btn){text-decoration:none;font-weight:500}.nav a:not(.btn):hover{color:var(--red)}
+.menu-btn{display:none;background:none;border:1px solid var(--line);border-radius:8px;font-size:1.3rem;padding:4px 12px;color:var(--ink)}
+.btn{display:inline-block;border:1.5px solid transparent;border-radius:var(--r);padding:10px 20px;font:600 1rem Hind,sans-serif;text-decoration:none;cursor:pointer;transition:transform .15s}
+.btn:active{transform:scale(.97)}.btn.call{background:var(--p);color:#fff}.btn.wa{background:var(--green);color:#fff}
+.btn.ghost{border-color:var(--blue);color:var(--blue);background:transparent}
+.hero{padding:64px 0 56px;background:linear-gradient(135deg,color-mix(in srgb,var(--p) 10%,transparent),transparent 60%),var(--paper);border-bottom:1px solid var(--line)}
+.hero-in{display:grid;grid-template-columns:1fr 240px;gap:40px;align-items:center}
+h1{font-size:clamp(1.8rem,4.4vw,3rem);color:var(--blue);max-width:18ch}.hero p{max-width:56ch;color:var(--muted);font-size:1.15rem;margin:18px 0 26px}
+.actions{display:flex;gap:12px;flex-wrap:wrap}.actions.col{flex-direction:column;align-items:stretch}
+.seal{width:220px;height:220px;border-radius:50%;border:3px double var(--blue);display:grid;place-content:center;text-align:center;color:var(--blue);transform:rotate(-8deg);justify-self:center;box-shadow:inset 0 0 0 8px var(--paper),inset 0 0 0 10px var(--blue);animation:stamp .6s cubic-bezier(.3,1.6,.5,1) backwards}
+.seal b{font-size:2rem}.seal span{font-size:.85rem;letter-spacing:.04em}.seal.open{color:var(--green);border-color:var(--green);box-shadow:inset 0 0 0 8px var(--paper),inset 0 0 0 10px var(--green)}.seal.closed{color:var(--red);border-color:var(--red);box-shadow:inset 0 0 0 8px var(--paper),inset 0 0 0 10px var(--red)}
+@keyframes stamp{from{transform:rotate(-8deg) scale(1.6);opacity:0}}
+.section{padding:64px 0}.section.alt{background:var(--card);border-block:1px solid var(--line)}
+h2{font-size:clamp(1.5rem,3vw,2rem);color:var(--blue)}.lead{color:var(--muted);margin:6px 0 22px;max-width:60ch}
+input,select,textarea{width:100%;font:inherit;color:var(--ink);background:var(--card);border:1.5px solid var(--line);border-radius:var(--r);padding:11px 14px}
+input:focus,select:focus,textarea:focus{border-color:var(--blue)}#service-search{max-width:460px;margin-bottom:22px}
+.ledger{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--line);border-radius:var(--r);background:var(--card);overflow:hidden}
+.ledger li{display:grid;grid-template-columns:44px 1fr;gap:4px 14px;padding:20px 22px;border-bottom:1px solid var(--line)}
+.ledger li:nth-child(odd){border-right:1px solid var(--line)}.ledger li[hidden]{display:none}
+.ledger .ic{font-size:1.7rem;grid-row:span 3}.ledger h3{margin:0;font:600 1.1rem "Noto Serif Devanagari",serif;color:var(--blue)}
+.ledger p{margin:0;color:var(--muted);font-size:.98rem}.ledger a{color:var(--green);font-weight:600;text-decoration:none}.ledger a:hover{text-decoration:underline}
+.empty{padding:18px;border:1.5px dashed var(--line);border-radius:var(--r);color:var(--muted)}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
+.tabs button{border:1.5px solid var(--line);background:var(--paper);color:var(--ink);padding:8px 16px;border-radius:99px;font:500 1rem Hind,sans-serif;cursor:pointer}
+.tabs button[aria-selected=true]{background:var(--p);border-color:var(--p);color:#fff}
+.check{border:1px solid var(--line);border-left:5px solid var(--brass);border-radius:var(--r);background:var(--paper);padding:22px 24px}
+.check h3{margin:0 0 4px;font:700 1.2rem "Noto Serif Devanagari",serif;color:var(--blue)}.check .note{color:var(--muted);margin:0 0 14px}
+.check ul{margin:0 0 18px;padding-left:1.2em}.check li{margin-bottom:6px}.check li::marker{color:var(--green)}
+form{display:grid;gap:16px}label{display:grid;gap:5px;font-weight:500}.err{color:var(--red);margin:0;font-weight:500}
+.contact{display:grid;grid-template-columns:1fr 260px;gap:40px;align-items:start}
+dt{font-weight:600;color:var(--blue);margin-top:14px}dd{margin:0}dd a{color:var(--green);font-weight:600}
+.fab{position:fixed;right:18px;bottom:18px;width:56px;height:56px;border-radius:50%;background:var(--green);display:grid;place-content:center;font-size:1.6rem;text-decoration:none;box-shadow:0 6px 18px rgba(0,0,0,.28);z-index:30}
+.foot{padding:26px 0 90px;color:var(--muted);font-size:.92rem;text-align:center}
+@media (max-width:760px){
+ .menu-btn{display:block}.nav{display:none;position:absolute;left:0;right:0;top:100%;flex-direction:column;align-items:stretch;gap:0;background:var(--card);border-bottom:1px solid var(--line);padding:8px 4%}
+ .nav.open{display:flex}.nav a{padding:12px 4px}.nav .btn{text-align:center;margin-top:6px}
+ .hero-in,.contact{grid-template-columns:1fr}.seal{width:170px;height:170px;order:-1;justify-self:start}.seal b{font-size:1.5rem}
+ .ledger{grid-template-columns:1fr}.ledger li:nth-child(odd){border-right:0}.section{padding:44px 0}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
 
-// ---------- DATA (edit text here) ----------
-const SERVICES = [
-  ["📜", "sale deed registry property plot flat बैनामा विक्रय पत्र जमीन",
-    { en: "Sale Deed", hi: "बैनामा / विक्रय पत्र" },
-    { en: "Title check, valuation, drafting and full Sub-Registrar registry help.", hi: "टाइटल जाँच, मूल्यांकन, ड्राफ्टिंग और उप-पंजीयक कार्यालय में पूरी रजिस्ट्री सहायता।" }],
-  ["📑", "lease rent tenancy shop house किरायानामा दुकान मकान",
-    { en: "Lease / Rent Deed", hi: "किरायानामा" },
-    { en: "Home and shop agreements with clear deposit, tenure and dispute terms.", hi: "मकान और दुकान के अनुबंध, जिनमें जमा राशि, अवधि और विवाद की शर्तें साफ लिखी हों।" }],
-  ["🎁", "gift deed family transfer दान पत्र",
-    { en: "Gift Deed", hi: "दान पत्र" },
-    { en: "Family property transfer with the correct stamp duty under state rules.", hi: "राज्य नियमों के अनुसार सही स्टाम्प ड्यूटी के साथ पारिवारिक संपत्ति हस्तांतरण।" }],
-  ["🤝", "release deed ancestral partition heir हकत्याग पत्र बंटवारा",
-    { en: "Release Deed", hi: "हकत्याग पत्र" },
-    { en: "Give up a share in co-owned or ancestral property, in proper legal form.", hi: "साझा या पैतृक संपत्ति में हिस्सा छोड़ने का वैधानिक दस्तावेज़।" }],
-  ["🏛️", "jamabandi bhunaksha khata land records nakal जमाबंदी भू-नक्शा खतौनी नकल",
-    { en: "Jamabandi & Bhunaksha", hi: "जमाबंदी एवं भू-नक्शा" },
-    { en: "Apna Khata Jamabandi and land map copies for banks and boundary needs.", hi: "बैंक और सीमा संबंधी काम के लिए अपना खाता जमाबंदी और भू-नक्शा की नकल।" }],
-  ["🎫", "estamp e-stamp stamp paper agreement स्टाम्प पेपर",
-    { en: "e-Stamp Paper", hi: "ई-स्टाम्प पेपर" },
-    { en: "Non-judicial e-Stamp papers for agreements and declarations, on the spot.", hi: "अनुबंध और घोषणा-पत्र के लिए गैर-न्यायिक ई-स्टाम्प पेपर, तुरंत।" }],
-  ["✍️", "affidavit notary income domicile name change शपथ पत्र",
-    { en: "Affidavits", hi: "शपथ पत्र" },
-    { en: "Income, name correction, domicile and legal-heir affidavits with notary help.", hi: "आय, नाम सुधार, मूल निवास और वारिस शपथ पत्र, नोटरी सहायता के साथ।" }],
-  ["⚖️", "power of attorney will gpa spa मुख्तारनामा वसीयत",
-    { en: "Power of Attorney & Will", hi: "मुख्तारनामा एवं वसीयत" },
-    { en: "General or Special Power of Attorney and registered Wills.", hi: "सामान्य या विशेष मुख्तारनामा और पंजीकृत वसीयत।" }],
-];
+/* ---- v3: themes, header, motion ---- */
+.progress{position:fixed;top:0;left:0;height:3px;width:0;background:linear-gradient(90deg,var(--p),var(--acc));z-index:60}
+.clock{font-variant-numeric:tabular-nums}
+.site-header{transition:transform .3s ease,box-shadow .3s;background:color-mix(in srgb,var(--card) 90%,transparent);backdrop-filter:blur(10px)}
+.site-header.hide{transform:translateY(-100%)}.site-header.scrolled{box-shadow:0 6px 24px rgba(0,0,0,.14)}
+.brand{flex:1;min-width:0}.nav{margin-left:auto}.nav a:not(.btn){position:relative;padding:6px 0}
+.nav a:not(.btn)::after{content:"";position:absolute;left:0;bottom:0;height:2px;width:0;background:var(--acc);transition:width .25s}
+.nav a.active::after,.nav a:not(.btn):hover::after{width:100%}
+.tools{display:flex;align-items:center;gap:8px}
+.lang{display:flex;border:1.5px solid var(--line);border-radius:12px;overflow:hidden;height:42px}
+.lang button{background:none;border:0;color:var(--ink);padding:0 12px;font:600 .95rem Hind,sans-serif;cursor:pointer}
+.lang button[aria-pressed=true]{background:var(--p);color:#fff}
+.icon-btn,.menu-btn{width:42px;height:42px;display:grid;place-content:center;border:1.5px solid var(--line);border-radius:12px;background:var(--card);color:var(--ink);font-size:1.15rem;cursor:pointer;padding:0}
+.menu-btn{display:none}.menu-btn span{display:block;width:20px;height:2px;background:currentColor;border-radius:2px;margin:2.5px 0;transition:transform .25s,opacity .2s}
+.menu-btn[aria-expanded=true] span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+.menu-btn[aria-expanded=true] span:nth-child(2){opacity:0}
+.menu-btn[aria-expanded=true] span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+.theme-wrap{position:relative}
+.theme-pop{position:absolute;right:0;top:calc(100% + 10px);width:250px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;box-shadow:0 14px 40px rgba(0,0,0,.25);animation:drop .2s ease}
+.theme-pop[hidden]{display:none}.theme-pop p{margin:0 0 8px;font-weight:600;font-size:.9rem;color:var(--muted)}
+.swatches{display:flex;gap:12px;margin-bottom:14px}
+.sw{width:34px;height:34px;border-radius:50%;border:3px solid var(--card);box-shadow:0 0 0 2px var(--line);cursor:pointer;padding:0}.sw[aria-pressed=true]{box-shadow:0 0 0 3px var(--ink)}
+.modes{display:flex;gap:6px}.modes button{flex:1;border:1.5px solid var(--line);background:var(--paper);color:var(--ink);border-radius:9px;padding:6px 4px;font:500 .9rem Hind,sans-serif;cursor:pointer}
+.modes button[aria-pressed=true]{background:var(--p);border-color:var(--p);color:#fff}
+@keyframes drop{from{opacity:0;transform:translateY(-8px)}}
+.hero{position:relative;overflow:hidden}.hero-in{position:relative;z-index:1}
+.blob{position:absolute;border-radius:50%;filter:blur(60px);opacity:.3;animation:float 14s ease-in-out infinite}
+.b1{width:340px;height:340px;background:var(--p);top:-120px;right:-60px}.b2{width:280px;height:280px;background:var(--acc);bottom:-140px;left:20%;animation-delay:-6s}
+@keyframes float{50%{transform:translate(30px,24px) scale(1.12)}}
+.ticker{font:600 1.2rem "Noto Serif Devanagari",serif;color:var(--acc);height:1.9em;margin-top:14px}
+.ticker span{display:inline-block;animation:tick .5s ease}@keyframes tick{from{opacity:0;transform:translateY(10px)}}
+.rv{opacity:0;transform:translateY(24px);transition:opacity .6s,transform .6s}.rv.in{opacity:1;transform:none}
+.section h2{position:relative;padding-bottom:10px}.section h2::after{content:"";position:absolute;left:0;bottom:0;width:54px;height:3px;background:var(--acc);border-radius:3px}
+.ledger li{transition:background .2s}.ledger li:hover{background:color-mix(in srgb,var(--p) 8%,var(--card))}.ledger li:hover .ic{animation:wob .5s}
+@keyframes wob{30%{transform:rotate(-12deg) scale(1.2)}70%{transform:rotate(8deg)}}
+.btn:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(0,0,0,.18)}.tabs button:hover{border-color:var(--p)}
+.fab{animation:ring 3s infinite}@keyframes ring{0%,88%{transform:none}92%{transform:rotate(-14deg)}96%{transform:rotate(14deg)}}
+@media (max-width:760px){.menu-btn{display:grid}.nav{animation:drop .2s ease}.brand small{display:none}.brand strong{font-size:1.05rem}.tools{gap:6px}.lang button{padding:0 9px}.theme-pop{right:-48px}.topbar-in{font-size:.8rem}}
 
-const CHECKS = {
-  sale: { tab: { en: "Sale Deed", hi: "बैनामा / विक्रय पत्र" },
-    title: { en: "Documents for a Sale Deed", hi: "बैनामा / विक्रय पत्र के लिए दस्तावेज़" },
-    note: { en: "Buyer, seller and 2 witnesses must bring original photo ID.", hi: "खरीदार, विक्रेता और 2 गवाह मूल फोटो पहचान पत्र साथ लाएँ।" },
-    items: [
-      { en: "Original title papers or chain of deeds", hi: "मूल पट्टा, रजिस्ट्री या आवंटन पत्र" },
-      { en: "Aadhaar and PAN of seller and buyer", hi: "विक्रेता और खरीदार का आधार व पैन कार्ड" },
-      { en: "2 passport photos each of seller and buyer", hi: "विक्रेता और खरीदार की 2-2 पासपोर्ट फोटो" },
-      { en: "Latest property tax receipt or electricity bill", hi: "ताज़ा संपत्ति कर रसीद या बिजली बिल" },
-      { en: "Jamabandi & Bhunaksha (for revenue or farm land)", hi: "जमाबंदी व भू-नक्शा (राजस्व या कृषि भूमि के लिए)" },
-      { en: "2 witnesses with original Aadhaar and PAN", hi: "2 गवाह, मूल आधार व पैन के साथ" },
-      { en: "Payment details (cheque, DD or RTGS reference)", hi: "भुगतान विवरण (चेक, डीडी या आरटीजीएस संदर्भ)" }] },
-  lease: { tab: { en: "Lease / Rent", hi: "किरायानामा" },
-    title: { en: "Documents for a Lease / Rent Deed", hi: "किरायानामा के लिए दस्तावेज़" },
-    note: { en: "Works for homes and commercial premises.", hi: "मकान और व्यावसायिक परिसर दोनों के लिए।" },
-    items: [
-      { en: "Aadhaar and PAN of landlord", hi: "मकान/दुकान मालिक का आधार व पैन" },
-      { en: "Aadhaar and PAN of tenant", hi: "किरायेदार का आधार व पैन" },
-      { en: "Proof of ownership (bill, tax receipt or registry copy)", hi: "मालिकाना हक का प्रमाण (बिल, कर रसीद या रजिस्ट्री कॉपी)" },
-      { en: "Rent and security deposit terms", hi: "किराया और सिक्योरिटी डिपॉज़िट की शर्तें" },
-      { en: "2 passport photos of both parties", hi: "दोनों पक्षों की 2-2 पासपोर्ट फोटो" },
-      { en: "1 witness with valid photo ID", hi: "1 गवाह, वैध फोटो पहचान पत्र के साथ" }] },
-  gift: { tab: { en: "Gift / Release", hi: "दान / हकत्याग" },
-    title: { en: "Documents for a Gift / Release Deed", hi: "दान पत्र / हकत्याग पत्र के लिए दस्तावेज़" },
-    note: { en: "Lower stamp duty applies only to close blood relatives under Rajasthan rules.", hi: "राजस्थान नियमों में कम स्टाम्प ड्यूटी केवल निकट रक्त संबंधियों पर लागू होती है।" },
-    items: [
-      { en: "Original ownership deed of the property", hi: "संपत्ति का मूल स्वामित्व दस्तावेज़" },
-      { en: "Family tree, ration card or legal-heir certificate", hi: "वंशावली, राशन कार्ड या वारिस प्रमाण पत्र" },
-      { en: "Aadhaar and PAN of donor and receiver", hi: "देने वाले और पाने वाले का आधार व पैन" },
-      { en: "2 passport photos of both parties", hi: "दोनों पक्षों की 2-2 पासपोर्ट फोटो" },
-      { en: "2 witnesses with original photo ID", hi: "2 गवाह, मूल फोटो पहचान पत्र के साथ" },
-      { en: "NOC from the municipal body or authority, if the plot is leasehold", hi: "लीज़होल्ड प्लॉट हो तो नगर निकाय या प्राधिकरण का NOC" }] },
-  revenue: { tab: { en: "Jamabandi / Map", hi: "जमाबंदी / नक्शा" },
-    title: { en: "Details for Jamabandi & Bhunaksha", hi: "जमाबंदी एवं भू-नक्शा के लिए जानकारी" },
-    note: { en: "Certified digital copies for banks, registry or boundary disputes.", hi: "बैंक, रजिस्ट्री या सीमा विवाद के लिए प्रमाणित डिजिटल नकल।" },
-    items: [
-      { en: "Village (patwar halka) and Tehsil (Sanganer)", hi: "ग्राम / पटवार हल्का और तहसील (सांगानेर)" },
-      { en: "Khasra number or Khata number", hi: "खसरा संख्या या खाता संख्या" },
-      { en: "Current khatedar / owner name in revenue records", hi: "राजस्व रिकॉर्ड के अनुसार वर्तमान खातेदार का नाम" },
-      { en: "Applicant mobile number", hi: "आवेदक का मोबाइल नंबर" }] },
-};
-
-const T = {
-  inq: { en: "Inquire on WhatsApp", hi: "व्हाट्सऐप पर पूछें" },
-  none: { en: "No service matches that. Try another word, or WhatsApp us and we will help.", hi: "इस नाम की कोई सेवा नहीं मिली। दूसरा शब्द लिखें, या हमें व्हाट्सऐप करें।" },
-  copy: { en: "Copy list", hi: "सूची कॉपी करें" }, copied: { en: "Copied", hi: "कॉपी हो गई" },
-  share: { en: "Send on WhatsApp", hi: "व्हाट्सऐप पर भेजें" },
-  name: { en: "Please enter your name.", hi: "कृपया अपना नाम लिखें." },
-  open: { en: "Open", hi: "खुला" }, closed: { en: "Closed", hi: "बंद" },
-  sun: { en: "Closed today (Sunday)", hi: "आज बंद (रविवार)" },
-  sealOpen: { en: "OPEN", hi: "खुला" }, sealClosed: { en: "CLOSED", hi: "बंद" },
-  opensAt: { en: "opens 9:30 AM", hi: "सुबह 9:30 बजे खुलेगा" }, until: { en: "until 9:30 PM", hi: "रात 9:30 बजे तक" },
-  hello: { en: "Namaste, I need help with deed writing.", hi: "नमस्ते, मुझे दस्तावेज़ लेखन में सहायता चाहिए।" },
-};
-
-// ---------- Language ----------
-function applyLang() {
-  document.documentElement.lang = lang;
-  document.querySelectorAll("[data-en]").forEach((el) => (el.textContent = el.dataset[lang]));
-  document.querySelectorAll("[data-ph-en]").forEach((el) => (el.placeholder = el.dataset["ph" + (lang === "en" ? "En" : "Hi")]));
-  document.querySelectorAll("[data-lang]").forEach((b) => b.setAttribute("aria-pressed", b.dataset.lang === lang));
-  renderServices(); renderSwatches(); fillSelect(); renderTabs(); renderChecklist(activeTab); updateStatus(); filterServices();
-  const link = wa(L(T.hello));
-  $("#hero-wa").href = link; $("#fab").href = link;
-}
-document.querySelectorAll("[data-lang]").forEach((b) =>
-  b.addEventListener("click", () => {
-    lang = b.dataset.lang;
-    try { localStorage.setItem("lang", lang); } catch (e) {}
-    applyLang();
-  }));
-
-// ---------- Services + search ----------
-function renderServices() {
-  $("#services-list").innerHTML = SERVICES.map(([icon, kw, title, desc]) =>
-    `<li data-kw="${(kw + " " + title.en + " " + title.hi).toLowerCase()}" data-tip-en="Ask about ${title.en} on WhatsApp" data-tip-hi="${title.hi} के बारे में व्हाट्सऐप पर पूछें"><span class="ic" aria-hidden="true">${icon}</span>
-     <h3>${L(title)}</h3><p>${L(desc)}</p>
-     <a target="_blank" rel="noopener noreferrer" href="${wa(`Namaste, I want to inquire about ${title.en} (${title.hi}).`)}">${L(T.inq)}</a></li>`).join("");
-}
-function filterServices() {
-  const q = $("#service-search").value.toLowerCase().trim();
-  let shown = 0;
-  document.querySelectorAll("#services-list li").forEach((li) => {
-    const ok = li.dataset.kw.includes(q);
-    li.hidden = !ok; if (ok) shown++;
-  });
-  const no = $("#no-results");
-  no.hidden = shown > 0; no.textContent = L(T.none);
-}
-$("#service-search").addEventListener("input", filterServices);
-
-// ---------- Checklist ----------
-let activeTab = "sale";
-function renderTabs() {
-  $("#tabs").innerHTML = Object.entries(CHECKS).map(([k, v]) =>
-    `<button type="button" role="tab" data-type="${k}" aria-selected="${k === activeTab}" data-tip-en="Show the ${v.tab.en} checklist" data-tip-hi="${v.tab.hi} की सूची देखें">${L(v.tab)}</button>`).join("");
-  document.querySelectorAll("#tabs button").forEach((b) =>
-    b.addEventListener("click", () => { activeTab = b.dataset.type; renderTabs(); renderChecklist(activeTab); }));
-}
-function checklistText(d) {
-  return `${L(d.title)}\n${L(d.note)}\n\n` + d.items.map((it, i) => `${i + 1}. ${L(it)}`).join("\n") + `\n\n${ADDR}`;
-}
-function renderChecklist(type) {
-  const d = CHECKS[type];
-  $("#checklist-result").innerHTML =
-    `<h3>${L(d.title)}</h3><p class="note">${L(d.note)}</p><ul>${d.items.map((i) => `<li>${L(i)}</li>`).join("")}</ul>
-     <div class="actions"><button type="button" class="btn ghost" id="copy-btn">${L(T.copy)}</button>
-     <button type="button" class="btn wa" id="share-btn">${L(T.share)}</button></div>`;
-  $("#copy-btn").addEventListener("click", async (e) => {
-    try { await navigator.clipboard.writeText(checklistText(d)); e.target.textContent = L(T.copied); }
-    catch (err) { e.target.textContent = "—"; }
-    setTimeout(() => (e.target.textContent = L(T.copy)), 2000);
-  });
-  $("#share-btn").addEventListener("click", () =>
-    window.open(`https://wa.me/?text=${encodeURIComponent(checklistText(d))}`, "_blank", "noopener"));
-}
-
-// ---------- Enquiry form ----------
-function fillSelect() {
-  const sel = $("#f-service"), keep = sel.selectedIndex;
-  sel.innerHTML = SERVICES.map(([, , t], i) => `<option value="${i}">${L(t)}</option>`).join("");
-  if (keep > 0) sel.selectedIndex = keep;
-}
-$("#enquiry").addEventListener("submit", (e) => {
-  e.preventDefault();
-  const name = $("#f-name").value.trim(), err = $("#f-err");
-  if (!name) { err.textContent = L(T.name); err.hidden = false; $("#f-name").focus(); return; }
-  err.hidden = true;
-  const t = SERVICES[$("#f-service").value][2], msg = $("#f-msg").value.trim();
-  window.open(wa(`Namaste, my name is ${name}. I need help with: ${t.en} (${t.hi}).${msg ? "\n" + msg : ""}`), "_blank", "noopener");
-});
-
-// ---------- Office status (Mon–Sat 9:30–21:30 IST) ----------
-function updateStatus() {
-  const p = Object.fromEntries(new Intl.DateTimeFormat("en-US", { timeZone: "Asia/Kolkata", hour12: false, weekday: "short", hour: "numeric", minute: "numeric" })
-    .formatToParts(new Date()).map((x) => [x.type, x.value]));
-  const h = (parseInt(p.hour, 10) % 24) + parseInt(p.minute, 10) / 60, sun = p.weekday === "Sun";
-  const open = !sun && h >= 9.5 && h < 21.5;
-  $("#office-status").className = "status " + (open ? "open" : "closed");
-  $("#status-text").textContent = open ? L(T.open) : sun ? L(T.sun) : L(T.closed);
-  $("#clock").textContent = new Date().toLocaleString(lang === "hi" ? "hi-IN" : "en-IN", { timeZone: "Asia/Kolkata", weekday: "short", day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: true }) + " IST";
-}
-
-// ---------- Misc ----------
-$("#menu-btn").addEventListener("click", () => {
-  const n = $("#nav"), o = n.classList.toggle("open");
-  $("#menu-btn").setAttribute("aria-expanded", o);
-});
-const closeMenu = () => { $("#nav").classList.remove("open"); $("#menu-btn").setAttribute("aria-expanded", "false"); };
-document.querySelectorAll("#nav a").forEach((a) => a.addEventListener("click", closeMenu));
-$("#copy-addr").addEventListener("click", async (e) => {
-  try { await navigator.clipboard.writeText(ADDR); e.target.textContent = L(T.copied); } catch (err) {}
-  setTimeout(() => (e.target.textContent = e.target.dataset[lang]), 2000);
-});
-// ---------- Theme: colour + light/dark ----------
-const PALS = [["stamp", "#1b2a6b", "Stamp blue", "स्टाम्प नीला"], ["rose", "#9d2450", "Jaipur rose", "जयपुर गुलाबी"], ["forest", "#0f5c4a", "Forest green", "वन हरा"], ["saffron", "#b14a0a", "Saffron", "केसरिया"]];
-const store = (k, v) => { try { if (v === undefined) return localStorage.getItem(k); localStorage.setItem(k, v); } catch (e) {} };
-let pal = store("pal") || "stamp", mode = store("mode") || "auto";
-const darkMQ = matchMedia("(prefers-color-scheme: dark)");
-function applyTheme() {
-  const root = document.documentElement;
-  root.dataset.pal = pal;
-  root.dataset.mode = mode === "auto" ? (darkMQ.matches ? "dark" : "light") : mode;
-  document.querySelectorAll(".sw").forEach((b) => b.setAttribute("aria-pressed", b.dataset.pal === pal));
-  document.querySelectorAll(".modes button").forEach((b) => b.setAttribute("aria-pressed", b.dataset.mode === mode));
-  document.querySelector("meta[name=theme-color]").content = PALS.find((p) => p[0] === pal)[1];
-}
-function renderSwatches() {
-  $("#swatches").innerHTML = PALS.map((p) => `<button type="button" class="sw" data-pal="${p[0]}" style="background:${p[1]}" data-tip-en="${p[2]}" data-tip-hi="${p[3]}" aria-label="${lang === "en" ? p[2] : p[3]}"></button>`).join("");
-  applyTheme();
-}
-$("#swatches").addEventListener("click", (e) => { const b = e.target.closest(".sw"); if (b) { pal = b.dataset.pal; store("pal", pal); applyTheme(); } });
-document.querySelector(".modes").addEventListener("click", (e) => { const b = e.target.closest("button"); if (b) { mode = b.dataset.mode; store("mode", mode); applyTheme(); } });
-darkMQ.addEventListener("change", applyTheme);
-const pop = $("#theme-pop"), themeBtn = $("#theme-btn");
-const setPop = (open) => { pop.hidden = !open; themeBtn.setAttribute("aria-expanded", open); };
-themeBtn.addEventListener("click", (e) => { e.stopPropagation(); setPop(pop.hidden); });
-document.addEventListener("click", (e) => { if (!pop.hidden && !pop.contains(e.target)) setPop(false); });
-document.addEventListener("keydown", (e) => { if (e.key === "Escape") { setPop(false); closeMenu(); } });
-
-// ---------- Header hides on scroll down, returns on scroll up ----------
-const header = $(".site-header");
-let lastY = 0;
-addEventListener("scroll", () => {
-  const y = scrollY, lock = $("#nav").classList.contains("open") || !pop.hidden;
-  header.classList.toggle("scrolled", y > 10);
-  header.classList.toggle("hide", y > lastY && y > 140 && !lock);
-  lastY = y;
-  $("#progress").style.width = (y / Math.max(1, document.documentElement.scrollHeight - innerHeight)) * 100 + "%";
-}, { passive: true });
-
-// ---------- Motion: reveal, active menu link, rotating deed names, seal tilt ----------
-document.querySelectorAll("main .wrap > *").forEach((el) => el.classList.add("rv"));
-const reveal = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add("in"); reveal.unobserve(e.target); } }), { threshold: 0.1 });
-document.querySelectorAll(".rv").forEach((el) => reveal.observe(el));
-const spy = new IntersectionObserver((es) => es.forEach((e) => {
-  if (e.isIntersecting) document.querySelectorAll("#nav a:not(.btn)").forEach((a) => a.classList.toggle("active", a.getAttribute("href") === "#" + e.target.id));
-}), { rootMargin: "-40% 0px -55% 0px" });
-document.querySelectorAll("main section").forEach((s) => spy.observe(s));
-let ti = 0;
-const tick = () => { $("#ticker").innerHTML = `<span>✦ ${L(SERVICES[ti++ % SERVICES.length][2])}</span>`; };
-tick(); setInterval(tick, 2400);
-const heroEl = $(".hero"), sealEl = $("#seal");
-heroEl.addEventListener("pointermove", (e) => {
-  const r = heroEl.getBoundingClientRect(), x = (e.clientX - r.left) / r.width - 0.5, y = (e.clientY - r.top) / r.height - 0.5;
-  sealEl.style.transform = `rotate(${-8 + x * 12}deg) translate(${x * 14}px,${y * 14}px)`;
-});
-
-// ---------- Pop-up tips on hover (mouse only) ----------
-const tipEl = document.createElement("div");
-tipEl.id = "tip"; tipEl.setAttribute("role", "tooltip"); document.body.appendChild(tipEl);
-let tipTarget = null;
-const hideTip = () => { tipEl.classList.remove("show"); tipTarget = null; };
-document.addEventListener("pointerover", (e) => {
-  if (e.pointerType !== "mouse") return;
-  const t = e.target.closest("[data-tip-en]");
-  if (!t) return hideTip();
-  if (t === tipTarget) return;
-  tipTarget = t;
-  tipEl.textContent = t.dataset[lang === "en" ? "tipEn" : "tipHi"];
-  const r = t.getBoundingClientRect(), w = tipEl.offsetWidth, h = tipEl.offsetHeight;
-  const x = Math.max(8, Math.min(r.left + r.width / 2 - w / 2, innerWidth - w - 8));
-  const y = r.top - h - 10 < 8 ? r.bottom + 10 : r.top - h - 10;
-  tipEl.style.left = x + "px"; tipEl.style.top = y + "px";
-  tipEl.classList.add("show");
-});
-addEventListener("scroll", hideTip, { passive: true });
-
-// ---------- Logo: drop a file named logo.png next to index.html to replace "VC" ----------
-const probe = new Image();
-probe.onload = () => { $("#seal-logo").src = probe.src; $("#seal-logo").hidden = false; $("#seal").classList.add("has-logo"); };
-probe.src = "logo.png";
-
-$("#year").textContent = new Date().getFullYear();
-applyLang();
-setInterval(updateStatus, 1000);
+/* ---- v4: logo seal, centred map button, shine + pop-up tips ---- */
+.seal b{font-size:4.2rem;letter-spacing:.02em}
+.seal img{width:80%;height:80%;object-fit:contain;border-radius:50%;justify-self:center}
+.seal.has-logo b{display:none}
+.contact{grid-template-columns:1fr;gap:26px}
+.contact .actions.col{flex-direction:row;flex-wrap:wrap;justify-content:center;align-items:center}
+.btn,.ledger li,.tabs button,.seal{position:relative;overflow:hidden}
+.btn::after,.ledger li::after,.tabs button::after,.seal::after{content:"";position:absolute;top:0;left:-70%;width:45%;height:100%;background:linear-gradient(105deg,transparent,var(--shine,rgba(255,255,255,.5)),transparent);transform:skewX(-20deg);pointer-events:none}
+.btn:hover::after,.ledger li:hover::after,.tabs button:hover::after,.seal:hover::after{left:150%;transition:left .75s ease}
+.ledger li,.tabs button{--shine:color-mix(in srgb,var(--blue) 18%,transparent)}
+.tabs button[aria-selected=true]{--shine:rgba(255,255,255,.45)}
+#tip{position:fixed;top:0;left:0;z-index:80;max-width:240px;padding:7px 12px;border-radius:9px;background:var(--ink);color:var(--paper);font:500 .85rem/1.4 Hind,sans-serif;box-shadow:0 8px 24px rgba(0,0,0,.25);opacity:0;transform:translateY(6px) scale(.92);transition:opacity .18s,transform .18s;pointer-events:none}
+#tip.show{opacity:1;transform:none}
+@media (max-width:760px){.seal b{font-size:3.2rem}}
