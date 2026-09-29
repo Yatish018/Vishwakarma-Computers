@@ -1,199 +1,194 @@
-// --- Document Checklist Database ---
-const checklistData = {
-  sale: {
-    title: "Required Documents for Sale Deed (बैनामा / विक्रय पत्र)",
-    note: "All parties (Buyer, Seller, and 2 Witnesses) must carry original government photo IDs.",
+"use strict";
+const PHONE = "919829017080";
+const ADDR = "Vishwakarma Computers, Opp. SBI Bank, Nagar Nigam Road, Sanganer, Jaipur 302029";
+const $ = (s) => document.querySelector(s);
+const wa = (t) => `https://wa.me/${PHONE}?text=${encodeURIComponent(t)}`;
+let lang = "en";
+try { lang = localStorage.getItem("lang") || "en"; } catch (e) {}
+const L = (o) => o[lang];
+
+// ---------- DATA (edit text here) ----------
+const SERVICES = [
+  ["📜", "sale deed registry property plot flat बैनामा विक्रय पत्र जमीन",
+    { en: "Sale Deed", hi: "बैनामा / विक्रय पत्र" },
+    { en: "Title check, valuation, drafting and full Sub-Registrar registry help.", hi: "टाइटल जाँच, मूल्यांकन, ड्राफ्टिंग और उप-पंजीयक कार्यालय में पूरी रजिस्ट्री सहायता।" }],
+  ["📑", "lease rent tenancy shop house किरायानामा दुकान मकान",
+    { en: "Lease / Rent Deed", hi: "किरायानामा" },
+    { en: "Home and shop agreements with clear deposit, tenure and dispute terms.", hi: "मकान और दुकान के अनुबंध, जिनमें जमा राशि, अवधि और विवाद की शर्तें साफ लिखी हों।" }],
+  ["🎁", "gift deed family transfer दान पत्र",
+    { en: "Gift Deed", hi: "दान पत्र" },
+    { en: "Family property transfer with the correct stamp duty under state rules.", hi: "राज्य नियमों के अनुसार सही स्टाम्प ड्यूटी के साथ पारिवारिक संपत्ति हस्तांतरण।" }],
+  ["🤝", "release deed ancestral partition heir हकत्याग पत्र बंटवारा",
+    { en: "Release Deed", hi: "हकत्याग पत्र" },
+    { en: "Give up a share in co-owned or ancestral property, in proper legal form.", hi: "साझा या पैतृक संपत्ति में हिस्सा छोड़ने का वैधानिक दस्तावेज़।" }],
+  ["🏛️", "jamabandi bhunaksha khata land records nakal जमाबंदी भू-नक्शा खतौनी नकल",
+    { en: "Jamabandi & Bhunaksha", hi: "जमाबंदी एवं भू-नक्शा" },
+    { en: "Apna Khata Jamabandi and land map copies for banks and boundary needs.", hi: "बैंक और सीमा संबंधी काम के लिए अपना खाता जमाबंदी और भू-नक्शा की नकल।" }],
+  ["🎫", "estamp e-stamp stamp paper agreement स्टाम्प पेपर",
+    { en: "e-Stamp Paper", hi: "ई-स्टाम्प पेपर" },
+    { en: "Non-judicial e-Stamp papers for agreements and declarations, on the spot.", hi: "अनुबंध और घोषणा-पत्र के लिए गैर-न्यायिक ई-स्टाम्प पेपर, तुरंत।" }],
+  ["✍️", "affidavit notary income domicile name change शपथ पत्र",
+    { en: "Affidavits", hi: "शपथ पत्र" },
+    { en: "Income, name correction, domicile and legal-heir affidavits with notary help.", hi: "आय, नाम सुधार, मूल निवास और वारिस शपथ पत्र, नोटरी सहायता के साथ।" }],
+  ["⚖️", "power of attorney will gpa spa मुख्तारनामा वसीयत",
+    { en: "Power of Attorney & Will", hi: "मुख्तारनामा एवं वसीयत" },
+    { en: "General or Special Power of Attorney and registered Wills.", hi: "सामान्य या विशेष मुख्तारनामा और पंजीकृत वसीयत।" }],
+];
+
+const CHECKS = {
+  sale: { tab: { en: "Sale Deed", hi: "बैनामा" },
+    title: { en: "Documents for a Sale Deed", hi: "बैनामा के लिए दस्तावेज़" },
+    note: { en: "Buyer, seller and 2 witnesses must bring original photo ID.", hi: "खरीदार, विक्रेता और 2 गवाह मूल फोटो पहचान पत्र साथ लाएँ।" },
     items: [
-      "Original Title Document / Chain of Deeds (मूल पट्टा, रजिस्ट्री या आवंटन पत्र)",
-      "Aadhaar Card and PAN Card of both Seller and Buyer",
-      "Two passport-sized photographs of Seller and Buyer",
-      "Latest Property Tax receipt or Electricity Bill (proof of possession)",
-      "Apna Khata Jamabandi & Bhunaksha (खसरा/खाता नकल - for agricultural/revenue land)",
-      "Two Witnesses with original Aadhaar cards and PAN cards",
-      "Payment details (Cheque / DD / RTGS reference for consideration amount)"
-    ]
-  },
-  lease: {
-    title: "Required Documents for Lease / Rent Deed (किरायानामा)",
-    note: "Applicable for both residential tenancy and commercial premises lease agreements.",
+      { en: "Original title papers or chain of deeds", hi: "मूल पट्टा, रजिस्ट्री या आवंटन पत्र" },
+      { en: "Aadhaar and PAN of seller and buyer", hi: "विक्रेता और खरीदार का आधार व पैन कार्ड" },
+      { en: "2 passport photos each of seller and buyer", hi: "विक्रेता और खरीदार की 2-2 पासपोर्ट फोटो" },
+      { en: "Latest property tax receipt or electricity bill", hi: "ताज़ा संपत्ति कर रसीद या बिजली बिल" },
+      { en: "Jamabandi & Bhunaksha (for revenue or farm land)", hi: "जमाबंदी व भू-नक्शा (राजस्व या कृषि भूमि के लिए)" },
+      { en: "2 witnesses with original Aadhaar and PAN", hi: "2 गवाह, मूल आधार व पैन के साथ" },
+      { en: "Payment details (cheque, DD or RTGS reference)", hi: "भुगतान विवरण (चेक, डीडी या आरटीजीएस संदर्भ)" }] },
+  lease: { tab: { en: "Lease / Rent", hi: "किरायानामा" },
+    title: { en: "Documents for a Lease / Rent Deed", hi: "किरायानामा के लिए दस्तावेज़" },
+    note: { en: "Works for homes and commercial premises.", hi: "मकान और व्यावसायिक परिसर दोनों के लिए।" },
     items: [
-      "Aadhaar Card and PAN Card of Landlord (मकान मालिक / दुकान मालिक)",
-      "Aadhaar Card and PAN Card of Tenant (किरायेदार)",
-      "Proof of ownership (Electricity bill, House tax receipt, or registry copy)",
-      "Security deposit and monthly rent terms (cheque details if applicable)",
-      "Two passport-sized photographs of both parties",
-      "One independent witness with valid photo ID"
-    ]
-  },
-  gift: {
-    title: "Required Documents for Gift / Release Deed (दान पत्र / हकत्याग पत्र)",
-    note: "Concessional stamp duty applies strictly to defined blood relatives under Rajasthan government rules.",
+      { en: "Aadhaar and PAN of landlord", hi: "मकान/दुकान मालिक का आधार व पैन" },
+      { en: "Aadhaar and PAN of tenant", hi: "किरायेदार का आधार व पैन" },
+      { en: "Proof of ownership (bill, tax receipt or registry copy)", hi: "मालिकाना हक का प्रमाण (बिल, कर रसीद या रजिस्ट्री कॉपी)" },
+      { en: "Rent and security deposit terms", hi: "किराया और सिक्योरिटी डिपॉज़िट की शर्तें" },
+      { en: "2 passport photos of both parties", hi: "दोनों पक्षों की 2-2 पासपोर्ट फोटो" },
+      { en: "1 witness with valid photo ID", hi: "1 गवाह, वैध फोटो पहचान पत्र के साथ" }] },
+  gift: { tab: { en: "Gift / Release", hi: "दान / हकत्याग" },
+    title: { en: "Documents for a Gift / Release Deed", hi: "दान पत्र / हकत्याग पत्र के लिए दस्तावेज़" },
+    note: { en: "Lower stamp duty applies only to close blood relatives under Rajasthan rules.", hi: "राजस्थान नियमों में कम स्टाम्प ड्यूटी केवल निकट रक्त संबंधियों पर लागू होती है।" },
     items: [
-      "Original registered ownership deed of the property (मूल स्वामित्व दस्तावेज)",
-      "Family tree / Ration card or legal heir certificate proving blood relation",
-      "Aadhaar Card and PAN Card of Donor (देने वाला) and Donee (पाने वाला)",
-      "Two passport-sized photographs of both parties",
-      "Two witnesses with original government-issued photo IDs",
-      "NOC from municipal corporation or development authority (if required for leasehold plots)"
-    ]
-  },
-  revenue: {
-    title: "Details Required for Jamabandi & Bhunaksha (जमाबंदी एवं भू-नक्शा नकल)",
-    note: "Official certified digital copies for banks, registries, or boundary disputes.",
+      { en: "Original ownership deed of the property", hi: "संपत्ति का मूल स्वामित्व दस्तावेज़" },
+      { en: "Family tree, ration card or legal-heir certificate", hi: "वंशावली, राशन कार्ड या वारिस प्रमाण पत्र" },
+      { en: "Aadhaar and PAN of donor and receiver", hi: "देने वाले और पाने वाले का आधार व पैन" },
+      { en: "2 passport photos of both parties", hi: "दोनों पक्षों की 2-2 पासपोर्ट फोटो" },
+      { en: "2 witnesses with original photo ID", hi: "2 गवाह, मूल फोटो पहचान पत्र के साथ" },
+      { en: "NOC from the municipal body or authority, if the plot is leasehold", hi: "लीज़होल्ड प्लॉट हो तो नगर निकाय या प्राधिकरण का NOC" }] },
+  revenue: { tab: { en: "Jamabandi / Map", hi: "जमाबंदी / नक्शा" },
+    title: { en: "Details for Jamabandi & Bhunaksha", hi: "जमाबंदी एवं भू-नक्शा के लिए जानकारी" },
+    note: { en: "Certified digital copies for banks, registry or boundary disputes.", hi: "बैंक, रजिस्ट्री या सीमा विवाद के लिए प्रमाणित डिजिटल नकल।" },
     items: [
-      "Name of Revenue Village (ग्राम/पटवार हल्का) and Tehsil (तहसील: सांगानेर)",
-      "Khasra Number (खसरा संख्या) OR Khata Number (खाता संख्या)",
-      "Name of Current Khatedar/Owner as per revenue records",
-      "Applicant mobile number for verification"
-    ]
-  }
+      { en: "Village (patwar halka) and Tehsil (Sanganer)", hi: "ग्राम / पटवार हल्का और तहसील (सांगानेर)" },
+      { en: "Khasra number or Khata number", hi: "खसरा संख्या या खाता संख्या" },
+      { en: "Current khatedar / owner name in revenue records", hi: "राजस्व रिकॉर्ड के अनुसार वर्तमान खातेदार का नाम" },
+      { en: "Applicant mobile number", hi: "आवेदक का मोबाइल नंबर" }] },
 };
 
-// --- Live Ticking Clock & Office Status (Mon–Sat: 9:30 AM – 9:30 PM IST) ---
-function updateOfficeStatus() {
-  const badge = document.getElementById("office-status");
-  const textElem = document.getElementById("status-text");
-  if (!badge || !textElem) return;
+const T = {
+  inq: { en: "Inquire on WhatsApp", hi: "व्हाट्सऐप पर पूछें" },
+  none: { en: "No service matches that. Try another word, or WhatsApp us and we will help.", hi: "इस नाम की कोई सेवा नहीं मिली। दूसरा शब्द लिखें, या हमें व्हाट्सऐप करें।" },
+  copy: { en: "Copy list", hi: "सूची कॉपी करें" }, copied: { en: "Copied", hi: "कॉपी हो गई" },
+  share: { en: "Send on WhatsApp", hi: "व्हाट्सऐप पर भेजें" },
+  name: { en: "Please enter your name.", hi: "कृपया अपना नाम लिखें." },
+  open: { en: "Open now", hi: "अभी खुला है" }, closed: { en: "Closed now", hi: "अभी बंद है" },
+  sun: { en: "Closed today (Sunday)", hi: "आज बंद (रविवार)" },
+  sealOpen: { en: "OPEN", hi: "खुला" }, sealClosed: { en: "CLOSED", hi: "बंद" },
+  opensAt: { en: "opens 9:30 AM", hi: "सुबह 9:30 बजे खुलेगा" }, until: { en: "until 9:30 PM", hi: "रात 9:30 बजे तक" },
+  hello: { en: "Namaste, I need help with deed writing.", hi: "नमस्ते, मुझे दस्तावेज़ लेखन में सहायता चाहिए।" },
+};
 
-  const now = new Date();
-  
-  // Format current live time in Jaipur (IST)
-  const timeString = now.toLocaleTimeString("en-IN", {
-    timeZone: "Asia/Kolkata",
-    hour: "2-digit",
-    minute: "2-digit",
-    second: "2-digit",
-    hour12: true
-  });
-
-  // Calculate day and hours in IST
-  const options = { timeZone: "Asia/Kolkata", hour12: false, weekday: "short", hour: "numeric", minute: "numeric" };
-  const formatter = new Intl.DateTimeFormat("en-US", options);
-  const parts = formatter.formatToParts(now);
-
-  let weekday = "";
-  let hour = 0;
-  let minute = 0;
-
-  for (const part of parts) {
-    if (part.type === "weekday") weekday = part.value;
-    if (part.type === "hour") hour = parseInt(part.value, 10);
-    if (part.type === "minute") minute = parseInt(part.value, 10);
-  }
-
-  const currentDecHour = hour + minute / 60;
-  const isSunday = weekday === "Sun";
-
-  // Mon–Sat: 9:30 AM (9.5) to 9:30 PM (21.5)
-  if (!isSunday && currentDecHour >= 9.5 && currentDecHour < 21.5) {
-    badge.className = "status-badge open";
-    textElem.textContent = `Open Now • ${timeString} IST (9:30 AM – 9:30 PM)`;
-  } else {
-    badge.className = "status-badge closed";
-    textElem.textContent = isSunday 
-      ? `Closed Today (Sunday) • ${timeString} IST` 
-      : `Closed Now • ${timeString} IST (Opens 9:30 AM)`;
-  }
+// ---------- Language ----------
+function applyLang() {
+  document.documentElement.lang = lang;
+  document.querySelectorAll("[data-en]").forEach((el) => (el.textContent = el.dataset[lang]));
+  document.querySelectorAll("[data-ph-en]").forEach((el) => (el.placeholder = el.dataset["ph" + (lang === "en" ? "En" : "Hi")]));
+  document.querySelectorAll("[data-lang]").forEach((b) => b.setAttribute("aria-pressed", b.dataset.lang === lang));
+  renderServices(); fillSelect(); renderTabs(); renderChecklist(activeTab); updateStatus(); filterServices();
+  const link = wa(L(T.hello));
+  $("#hero-wa").href = link; $("#fab").href = link;
 }
+document.querySelectorAll("[data-lang]").forEach((b) =>
+  b.addEventListener("click", () => {
+    lang = b.dataset.lang;
+    try { localStorage.setItem("lang", lang); } catch (e) {}
+    applyLang();
+  }));
 
-// --- Render Checklist with Clipboard & WhatsApp Sharing ---
+// ---------- Services + search ----------
+function renderServices() {
+  $("#services-list").innerHTML = SERVICES.map(([icon, kw, title, desc]) =>
+    `<li data-kw="${(kw + " " + title.en + " " + title.hi).toLowerCase()}"><span class="ic" aria-hidden="true">${icon}</span>
+     <h3>${L(title)}</h3><p>${L(desc)}</p>
+     <a target="_blank" rel="noopener noreferrer" href="${wa(`Namaste, I want to inquire about ${title.en} (${title.hi}).`)}">${L(T.inq)}</a></li>`).join("");
+}
+function filterServices() {
+  const q = $("#service-search").value.toLowerCase().trim();
+  let shown = 0;
+  document.querySelectorAll("#services-list li").forEach((li) => {
+    const ok = li.dataset.kw.includes(q);
+    li.hidden = !ok; if (ok) shown++;
+  });
+  const no = $("#no-results");
+  no.hidden = shown > 0; no.textContent = L(T.none);
+}
+$("#service-search").addEventListener("input", filterServices);
+
+// ---------- Checklist ----------
+let activeTab = "sale";
+function renderTabs() {
+  $("#tabs").innerHTML = Object.entries(CHECKS).map(([k, v]) =>
+    `<button type="button" role="tab" data-type="${k}" aria-selected="${k === activeTab}">${L(v.tab)}</button>`).join("");
+  document.querySelectorAll("#tabs button").forEach((b) =>
+    b.addEventListener("click", () => { activeTab = b.dataset.type; renderTabs(); renderChecklist(activeTab); }));
+}
+function checklistText(d) {
+  return `${L(d.title)}\n${L(d.note)}\n\n` + d.items.map((it, i) => `${i + 1}. ${L(it)}`).join("\n") + `\n\n${ADDR}`;
+}
 function renderChecklist(type) {
-  const container = document.getElementById("checklist-result");
-  const data = checklistData[type];
-  if (!container || !data) return;
-
-  const itemsHtml = data.items.map((item) => `<li>${item}</li>`).join("");
-
-  container.innerHTML = `
-    <div class="checklist-header">
-      <div>
-        <h4>${data.title}</h4>
-        <p class="checklist-note">${data.note}</p>
-      </div>
-      <div class="checklist-actions">
-        <button type="button" id="copy-checklist-btn" class="btn btn-outline btn-sm">📋 Copy List</button>
-        <button type="button" id="share-wa-btn" class="btn btn-whatsapp btn-sm">💬 Share on WhatsApp</button>
-      </div>
-    </div>
-    <ul class="checklist-items">
-      ${itemsHtml}
-    </ul>
-  `;
-
-  // 1. Copy to clipboard
-  const copyBtn = document.getElementById("copy-checklist-btn");
-  if (copyBtn) {
-    copyBtn.addEventListener("click", () => {
-      const textToShare = `${data.title}\n\nNote: ${data.note}\n\nRequired Documents:\n` +
-        data.items.map((it, idx) => `${idx + 1}. ${it}`).join("\n") +
-        `\n\nOffice: Vishwakarma Computers, Opp. SBI Bank, Nagar Nigam Road, Sanganer, Jaipur.`;
-
-      navigator.clipboard.writeText(textToShare).then(() => {
-        copyBtn.textContent = "✅ Copied!";
-        setTimeout(() => {
-          copyBtn.textContent = "📋 Copy List";
-        }, 2000);
-      });
-    });
-  }
-
-  // 2. Direct Share to WhatsApp
-  const shareBtn = document.getElementById("share-wa-btn");
-  if (shareBtn) {
-    shareBtn.addEventListener("click", () => {
-      const textToShare = `${data.title}\n\nNote: ${data.note}\n\nRequired Documents:\n` +
-        data.items.map((it, idx) => `${idx + 1}. ${it}`).join("\n") +
-        `\n\nOffice: Vishwakarma Computers, Opp. SBI Bank, Nagar Nigam Road, Sanganer, Jaipur.`;
-
-      const waUrl = `https://wa.me/?text=${encodeURIComponent(textToShare)}`;
-      window.open(waUrl, "_blank");
-    });
-  }
-}
-
-// --- Live Service Search Filtering ---
-function setupServiceSearch() {
-  const searchInput = document.getElementById("service-search");
-  const cards = document.querySelectorAll(".service-card");
-
-  if (!searchInput) return;
-
-  searchInput.addEventListener("input", (e) => {
-    const query = e.target.value.toLowerCase().trim();
-
-    cards.forEach((card) => {
-      const searchData = (card.dataset.title || "").toLowerCase();
-      const cardText = card.innerText.toLowerCase();
-      if (searchData.includes(query) || cardText.includes(query)) {
-        card.style.display = "flex";
-      } else {
-        card.style.display = "none";
-      }
-    });
+  const d = CHECKS[type];
+  $("#checklist-result").innerHTML =
+    `<h3>${L(d.title)}</h3><p class="note">${L(d.note)}</p><ul>${d.items.map((i) => `<li>${L(i)}</li>`).join("")}</ul>
+     <div class="actions"><button type="button" class="btn ghost" id="copy-btn">${L(T.copy)}</button>
+     <button type="button" class="btn wa" id="share-btn">${L(T.share)}</button></div>`;
+  $("#copy-btn").addEventListener("click", async (e) => {
+    try { await navigator.clipboard.writeText(checklistText(d)); e.target.textContent = L(T.copied); }
+    catch (err) { e.target.textContent = "—"; }
+    setTimeout(() => (e.target.textContent = L(T.copy)), 2000);
   });
+  $("#share-btn").addEventListener("click", () =>
+    window.open(`https://wa.me/?text=${encodeURIComponent(checklistText(d))}`, "_blank", "noopener"));
 }
 
-// --- Initialize App ---
-function init() {
-  const yearSpan = document.getElementById("current-year");
-  if (yearSpan) {
-    yearSpan.textContent = new Date().getFullYear();
-  }
+// ---------- Enquiry form ----------
+function fillSelect() {
+  const sel = $("#f-service"), keep = sel.selectedIndex;
+  sel.innerHTML = SERVICES.map(([, , t], i) => `<option value="${i}">${L(t)}</option>`).join("");
+  if (keep > 0) sel.selectedIndex = keep;
+}
+$("#enquiry").addEventListener("submit", (e) => {
+  e.preventDefault();
+  const name = $("#f-name").value.trim(), err = $("#f-err");
+  if (!name) { err.textContent = L(T.name); err.hidden = false; $("#f-name").focus(); return; }
+  err.hidden = true;
+  const t = SERVICES[$("#f-service").value][2], msg = $("#f-msg").value.trim();
+  window.open(wa(`Namaste, my name is ${name}. I need help with: ${t.en} (${t.hi}).${msg ? "\n" + msg : ""}`), "_blank", "noopener");
+});
 
-  updateOfficeStatus();
-  setInterval(updateOfficeStatus, 1000); // Live ticking every second
-
-  renderChecklist("sale");
-  setupServiceSearch();
-
-  const tabButtons = document.querySelectorAll(".tab-btn");
-  tabButtons.forEach((btn) => {
-    btn.addEventListener("click", () => {
-      tabButtons.forEach((b) => b.classList.remove("active"));
-      btn.classList.add("active");
-      renderChecklist(btn.dataset.type);
-    });
-  });
+// ---------- Office status (Mon–Sat 9:30–21:30 IST) ----------
+function updateStatus() {
+  const p = Object.fromEntries(new Intl.DateTimeFormat("en-US", { timeZone: "Asia/Kolkata", hour12: false, weekday: "short", hour: "numeric", minute: "numeric" })
+    .formatToParts(new Date()).map((x) => [x.type, x.value]));
+  const h = (parseInt(p.hour, 10) % 24) + parseInt(p.minute, 10) / 60, sun = p.weekday === "Sun";
+  const open = !sun && h >= 9.5 && h < 21.5;
+  $("#office-status").className = "status " + (open ? "open" : "closed");
+  $("#seal").className = "seal " + (open ? "open" : "closed");
+  $("#seal-state").textContent = L(open ? T.sealOpen : T.sealClosed);
+  $("#status-text").textContent = open ? `${L(T.open)} · ${L(T.until)}` : sun ? L(T.sun) : `${L(T.closed)} · ${L(T.opensAt)}`;
 }
 
-document.addEventListener("DOMContentLoaded", init);
+// ---------- Misc ----------
+$("#menu-btn").addEventListener("click", () => {
+  const n = $("#nav"), o = n.classList.toggle("open");
+  $("#menu-btn").setAttribute("aria-expanded", o);
+});
+document.querySelectorAll("#nav a").forEach((a) => a.addEventListener("click", () => $("#nav").classList.remove("open")));
+$("#copy-addr").addEventListener("click", async (e) => {
+  try { await navigator.clipboard.writeText(ADDR); e.target.textContent = L(T.copied); } catch (err) {}
+  setTimeout(() => (e.target.textContent = e.target.dataset[lang]), 2000);
+});
+$("#year").textContent = new Date().getFullYear();
+applyLang();
+setInterval(updateStatus, 30000);
