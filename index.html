@@ -37,15 +37,15 @@
     <a href="#documents" data-en="Documents" data-hi="दस्तावेज़">Documents</a>
     <a href="#book" data-en="Enquiry" data-hi="पूछताछ">Enquiry</a>
     <a href="#contact" data-en="Office" data-hi="कार्यालय">Office</a>
-    <a class="btn call" href="tel:+919829017080" data-en="Call now" data-hi="अभी कॉल करें">Call now</a>
+    <a class="btn call" href="tel:+919829017080" data-tip-en="Call +91 98290 17080" data-tip-hi="कॉल करें +91 98290 17080" data-en="Call now" data-hi="अभी कॉल करें">Call now</a>
   </nav>
   <div class="tools">
     <div class="lang" role="group" aria-label="Language">
-      <button type="button" data-lang="en" aria-pressed="true">EN</button>
-      <button type="button" data-lang="hi" aria-pressed="false">हिं</button>
+      <button type="button" data-lang="en" aria-pressed="true" data-tip-en="View in English" data-tip-hi="English में देखें">EN</button>
+      <button type="button" data-lang="hi" aria-pressed="false" data-tip-en="View in Hindi" data-tip-hi="हिन्दी में देखें">हिं</button>
     </div>
     <div class="theme-wrap">
-      <button type="button" id="theme-btn" class="icon-btn" aria-expanded="false" aria-controls="theme-pop" aria-label="Colour and mode">🎨</button>
+      <button type="button" id="theme-btn" class="icon-btn" aria-expanded="false" aria-controls="theme-pop" aria-label="Colour and mode" data-tip-en="Change colour or light / dark" data-tip-hi="रंग या लाइट / डार्क बदलें">🎨</button>
       <div id="theme-pop" class="theme-pop" hidden>
         <p data-en="Colour" data-hi="रंग">Colour</p>
         <div class="swatches" id="swatches"></div>
@@ -67,11 +67,11 @@
     <div class="ticker" id="ticker" aria-hidden="true"></div>
     <p data-en="Sale, lease, gift and release deeds, e-Stamp, affidavits, Jamabandi and Bhunaksha copies — all under one roof in Sanganer." data-hi="बैनामा / विक्रय पत्र, किरायानामा, दान पत्र, हकत्याग पत्र, ई-स्टाम्प, शपथ पत्र, जमाबंदी और भू-नक्शा — सब कुछ सांगानेर में एक ही जगह।">Sale, lease, gift and release deeds, e-Stamp, affidavits, Jamabandi and Bhunaksha copies — all under one roof in Sanganer.</p>
     <div class="actions">
-      <a class="btn wa" target="_blank" rel="noopener noreferrer" id="hero-wa" href="#" data-en="WhatsApp us" data-hi="व्हाट्सऐप करें">WhatsApp us</a>
+      <a class="btn wa" target="_blank" rel="noopener noreferrer" id="hero-wa" href="#" data-tip-en="Opens a WhatsApp chat" data-tip-hi="व्हाट्सऐप चैट खुलेगी" data-en="WhatsApp us" data-hi="व्हाट्सऐप करें">WhatsApp us</a>
       <a class="btn ghost" href="#documents" data-en="What to bring" data-hi="क्या दस्तावेज़ लाएँ">What to bring</a>
     </div>
   </div>
-  <div class="seal" id="seal" aria-hidden="true"><span data-en="Sanganer" data-hi="सांगानेर">Sanganer</span><b id="seal-state">…</b><span data-en="Jaipur 302029" data-hi="जयपुर 302029">Jaipur 302029</span></div>
+  <div class="seal" id="seal" aria-hidden="true"><img id="seal-logo" alt="" hidden><b>VC</b></div>
 </div></section>
 
 <main>
@@ -112,13 +112,13 @@
     </dl>
   </div>
   <div class="actions col">
-    <a class="btn ghost" target="_blank" rel="noopener noreferrer" href="https://www.google.com/maps/place/VISHWAKARMA+COMPUTERS/@26.8147854,75.7828621,17z/data=!3m1!4b1!4m6!3m5!1s0x396dcbca14a419a9:0xa1ea1c4283e31f32!8m2!3d26.8147854!4d75.7828621!16s%2Fg%2F11ky7cz4fx" data-en="Open in Google Maps" data-hi="गूगल मैप में खोलें">Open in Google Maps</a>
-    <button class="btn ghost" type="button" id="copy-addr" data-en="Copy address" data-hi="पता कॉपी करें">Copy address</button>
+    <a class="btn ghost" target="_blank" rel="noopener noreferrer" data-tip-en="See the route to our office" data-tip-hi="कार्यालय का रास्ता देखें" href="https://www.google.com/maps/place/VISHWAKARMA+COMPUTERS/@26.8147854,75.7828621,17z/data=!3m1!4b1!4m6!3m5!1s0x396dcbca14a419a9:0xa1ea1c4283e31f32!8m2!3d26.8147854!4d75.7828621!16s%2Fg%2F11ky7cz4fx" data-en="Open in Google Maps" data-hi="गूगल मैप में खोलें">Open in Google Maps</a>
+    <button class="btn ghost" type="button" id="copy-addr" data-tip-en="Copy the full address" data-tip-hi="पूरा पता कॉपी करें" data-en="Copy address" data-hi="पता कॉपी करें">Copy address</button>
   </div>
 </div></section>
 </main>
 
-<a class="fab" id="fab" target="_blank" rel="noopener noreferrer" href="#" aria-label="WhatsApp">💬</a>
+<a class="fab" id="fab" data-tip-en="Chat on WhatsApp" data-tip-hi="व्हाट्सऐप पर चैट करें" target="_blank" rel="noopener noreferrer" href="#" aria-label="WhatsApp">💬</a>
 <footer class="foot"><div class="wrap"><p>© <span id="year"></span> <span data-en="Vishwakarma Computers — Advocate & Deed Writer, Sanganer, Jaipur" data-hi="विश्वकर्मा कंप्यूटर्स — एडवोकेट एवं दस्तावेज लेखक, सांगानेर, जयपुर">Vishwakarma Computers — Advocate & Deed Writer, Sanganer, Jaipur</span></p></div></footer>
 <script src="app.js"></script>
 </body>
