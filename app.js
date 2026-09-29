@@ -110,7 +110,7 @@ document.querySelectorAll("[data-lang]").forEach((b) =>
 // ---------- Services + search ----------
 function renderServices() {
   $("#services-list").innerHTML = SERVICES.map(([icon, kw, title, desc]) =>
-    `<li data-kw="${(kw + " " + title.en + " " + title.hi).toLowerCase()}"><span class="ic" aria-hidden="true">${icon}</span>
+    `<li data-kw="${(kw + " " + title.en + " " + title.hi).toLowerCase()}" data-tip-en="Ask about ${title.en} on WhatsApp" data-tip-hi="${title.hi} के बारे में व्हाट्सऐप पर पूछें"><span class="ic" aria-hidden="true">${icon}</span>
      <h3>${L(title)}</h3><p>${L(desc)}</p>
      <a target="_blank" rel="noopener noreferrer" href="${wa(`Namaste, I want to inquire about ${title.en} (${title.hi}).`)}">${L(T.inq)}</a></li>`).join("");
 }
@@ -130,7 +130,7 @@ $("#service-search").addEventListener("input", filterServices);
 let activeTab = "sale";
 function renderTabs() {
   $("#tabs").innerHTML = Object.entries(CHECKS).map(([k, v]) =>
-    `<button type="button" role="tab" data-type="${k}" aria-selected="${k === activeTab}">${L(v.tab)}</button>`).join("");
+    `<button type="button" role="tab" data-type="${k}" aria-selected="${k === activeTab}" data-tip-en="Show the ${v.tab.en} checklist" data-tip-hi="${v.tab.hi} की सूची देखें">${L(v.tab)}</button>`).join("");
   document.querySelectorAll("#tabs button").forEach((b) =>
     b.addEventListener("click", () => { activeTab = b.dataset.type; renderTabs(); renderChecklist(activeTab); }));
 }
@@ -174,8 +174,6 @@ function updateStatus() {
   const h = (parseInt(p.hour, 10) % 24) + parseInt(p.minute, 10) / 60, sun = p.weekday === "Sun";
   const open = !sun && h >= 9.5 && h < 21.5;
   $("#office-status").className = "status " + (open ? "open" : "closed");
-  $("#seal").className = "seal " + (open ? "open" : "closed");
-  $("#seal-state").textContent = L(open ? T.sealOpen : T.sealClosed);
   $("#status-text").textContent = open ? L(T.open) : sun ? L(T.sun) : L(T.closed);
   $("#clock").textContent = new Date().toLocaleString(lang === "hi" ? "hi-IN" : "en-IN", { timeZone: "Asia/Kolkata", weekday: "short", day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: true }) + " IST";
 }
@@ -205,7 +203,7 @@ function applyTheme() {
   document.querySelector("meta[name=theme-color]").content = PALS.find((p) => p[0] === pal)[1];
 }
 function renderSwatches() {
-  $("#swatches").innerHTML = PALS.map((p) => `<button type="button" class="sw" data-pal="${p[0]}" style="background:${p[1]}" title="${lang === "en" ? p[2] : p[3]}" aria-label="${lang === "en" ? p[2] : p[3]}"></button>`).join("");
+  $("#swatches").innerHTML = PALS.map((p) => `<button type="button" class="sw" data-pal="${p[0]}" style="background:${p[1]}" data-tip-en="${p[2]}" data-tip-hi="${p[3]}" aria-label="${lang === "en" ? p[2] : p[3]}"></button>`).join("");
   applyTheme();
 }
 $("#swatches").addEventListener("click", (e) => { const b = e.target.closest(".sw"); if (b) { pal = b.dataset.pal; store("pal", pal); applyTheme(); } });
@@ -244,6 +242,31 @@ heroEl.addEventListener("pointermove", (e) => {
   const r = heroEl.getBoundingClientRect(), x = (e.clientX - r.left) / r.width - 0.5, y = (e.clientY - r.top) / r.height - 0.5;
   sealEl.style.transform = `rotate(${-8 + x * 12}deg) translate(${x * 14}px,${y * 14}px)`;
 });
+
+// ---------- Pop-up tips on hover (mouse only) ----------
+const tipEl = document.createElement("div");
+tipEl.id = "tip"; tipEl.setAttribute("role", "tooltip"); document.body.appendChild(tipEl);
+let tipTarget = null;
+const hideTip = () => { tipEl.classList.remove("show"); tipTarget = null; };
+document.addEventListener("pointerover", (e) => {
+  if (e.pointerType !== "mouse") return;
+  const t = e.target.closest("[data-tip-en]");
+  if (!t) return hideTip();
+  if (t === tipTarget) return;
+  tipTarget = t;
+  tipEl.textContent = t.dataset[lang === "en" ? "tipEn" : "tipHi"];
+  const r = t.getBoundingClientRect(), w = tipEl.offsetWidth, h = tipEl.offsetHeight;
+  const x = Math.max(8, Math.min(r.left + r.width / 2 - w / 2, innerWidth - w - 8));
+  const y = r.top - h - 10 < 8 ? r.bottom + 10 : r.top - h - 10;
+  tipEl.style.left = x + "px"; tipEl.style.top = y + "px";
+  tipEl.classList.add("show");
+});
+addEventListener("scroll", hideTip, { passive: true });
+
+// ---------- Logo: drop a file named logo.png next to index.html to replace "VC" ----------
+const probe = new Image();
+probe.onload = () => { $("#seal-logo").src = probe.src; $("#seal-logo").hidden = false; $("#seal").classList.add("has-logo"); };
+probe.src = "logo.png";
 
 $("#year").textContent = new Date().getFullYear();
 applyLang();
