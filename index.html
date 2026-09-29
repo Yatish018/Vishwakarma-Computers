@@ -14,18 +14,17 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Hind:wght@400;500;600&family=Noto+Serif+Devanagari:wght@600;700&display=swap" rel="stylesheet">
+<script>try{var d=document.documentElement,m=localStorage.mode||"auto";d.dataset.pal=localStorage.pal||"stamp";d.dataset.mode=m=="auto"?(matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"):m}catch(e){}</script>
 <link rel="stylesheet" href="style.css">
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"LegalService","name":"Vishwakarma Computers","telephone":"+919829017080","address":{"@type":"PostalAddress","streetAddress":"Opp. SBI Bank, Nagar Nigam Road","addressLocality":"Sanganer, Jaipur","addressRegion":"Rajasthan","postalCode":"302029","addressCountry":"IN"},"openingHours":"Mo-Sa 09:30-21:30"}</script>
 </head>
 <body>
+<div class="progress" id="progress"></div>
 <a class="skip" href="#services" data-en="Skip to content" data-hi="सीधे सामग्री पर जाएँ">Skip to content</a>
 
 <div class="topbar"><div class="wrap topbar-in">
   <span id="office-status" class="status"><i class="dot"></i><span id="status-text">…</span></span>
-  <div class="lang" role="group" aria-label="Language">
-    <button type="button" data-lang="en" aria-pressed="true">English</button>
-    <button type="button" data-lang="hi" aria-pressed="false">हिन्दी</button>
-  </div>
+  <time id="clock" class="clock"></time>
 </div></div>
 
 <header class="site-header"><div class="wrap head-in">
@@ -33,7 +32,6 @@
     <strong data-en="Vishwakarma Computers" data-hi="विश्वकर्मा कंप्यूटर्स">Vishwakarma Computers</strong>
     <small data-en="Advocate & Deed Writer, Sanganer" data-hi="एडवोकेट एवं दस्तावेज लेखक, सांगानेर">Advocate & Deed Writer, Sanganer</small>
   </a>
-  <button class="menu-btn" id="menu-btn" aria-expanded="false" aria-controls="nav" aria-label="Menu">☰</button>
   <nav id="nav" class="nav">
     <a href="#services" data-en="Services" data-hi="सेवाएँ">Services</a>
     <a href="#documents" data-en="Documents" data-hi="दस्तावेज़">Documents</a>
@@ -41,25 +39,46 @@
     <a href="#contact" data-en="Office" data-hi="कार्यालय">Office</a>
     <a class="btn call" href="tel:+919829017080" data-en="Call now" data-hi="अभी कॉल करें">Call now</a>
   </nav>
+  <div class="tools">
+    <div class="lang" role="group" aria-label="Language">
+      <button type="button" data-lang="en" aria-pressed="true">EN</button>
+      <button type="button" data-lang="hi" aria-pressed="false">हिं</button>
+    </div>
+    <div class="theme-wrap">
+      <button type="button" id="theme-btn" class="icon-btn" aria-expanded="false" aria-controls="theme-pop" aria-label="Colour and mode">🎨</button>
+      <div id="theme-pop" class="theme-pop" hidden>
+        <p data-en="Colour" data-hi="रंग">Colour</p>
+        <div class="swatches" id="swatches"></div>
+        <p data-en="Mode" data-hi="मोड">Mode</p>
+        <div class="modes">
+          <button type="button" data-mode="light" data-en="☀ Light" data-hi="☀ लाइट">☀ Light</button>
+          <button type="button" data-mode="dark" data-en="🌙 Dark" data-hi="🌙 डार्क">🌙 Dark</button>
+          <button type="button" data-mode="auto" data-en="Auto" data-hi="ऑटो">Auto</button>
+        </div>
+      </div>
+    </div>
+    <button class="menu-btn" id="menu-btn" aria-expanded="false" aria-controls="nav" aria-label="Menu"><span></span><span></span><span></span></button>
+  </div>
 </div></header>
 
-<section class="hero" id="top"><div class="wrap hero-in">
+<section class="hero" id="top"><i class="blob b1"></i><i class="blob b2"></i><div class="wrap hero-in">
   <div>
     <h1 data-en="Deeds drafted right. Registry done without the runaround." data-hi="सही ड्राफ्टिंग, आसान रजिस्ट्री, बिना भागदौड़।">Deeds drafted right. Registry done without the runaround.</h1>
-    <p data-en="Sale, lease, gift and release deeds, e-Stamp, affidavits, Jamabandi and Bhunaksha copies — all under one roof in Sanganer." data-hi="बैनामा, किरायानामा, दान पत्र, हकत्याग पत्र, ई-स्टाम्प, शपथ पत्र, जमाबंदी और भू-नक्शा — सब कुछ सांगानेर में एक ही जगह।">Sale, lease, gift and release deeds, e-Stamp, affidavits, Jamabandi and Bhunaksha copies — all under one roof in Sanganer.</p>
+    <div class="ticker" id="ticker" aria-hidden="true"></div>
+    <p data-en="Sale, lease, gift and release deeds, e-Stamp, affidavits, Jamabandi and Bhunaksha copies — all under one roof in Sanganer." data-hi="बैनामा / विक्रय पत्र, किरायानामा, दान पत्र, हकत्याग पत्र, ई-स्टाम्प, शपथ पत्र, जमाबंदी और भू-नक्शा — सब कुछ सांगानेर में एक ही जगह।">Sale, lease, gift and release deeds, e-Stamp, affidavits, Jamabandi and Bhunaksha copies — all under one roof in Sanganer.</p>
     <div class="actions">
       <a class="btn wa" target="_blank" rel="noopener noreferrer" id="hero-wa" href="#" data-en="WhatsApp us" data-hi="व्हाट्सऐप करें">WhatsApp us</a>
       <a class="btn ghost" href="#documents" data-en="What to bring" data-hi="क्या दस्तावेज़ लाएँ">What to bring</a>
     </div>
   </div>
-  <div class="seal" id="seal" aria-hidden="true"><span class="seal-top" data-en="Office" data-hi="कार्यालय">Office</span><b id="seal-state">…</b><span class="seal-bot">9:30 – 9:30</span></div>
+  <div class="seal" id="seal" aria-hidden="true"><span data-en="Sanganer" data-hi="सांगानेर">Sanganer</span><b id="seal-state">…</b><span data-en="Jaipur 302029" data-hi="जयपुर 302029">Jaipur 302029</span></div>
 </div></section>
 
 <main>
 <section id="services" class="section"><div class="wrap">
   <h2 data-en="Our services" data-hi="हमारी सेवाएँ">Our services</h2>
   <p class="lead" data-en="Type a document name in English or हिन्दी to find it." data-hi="अंग्रेज़ी या हिन्दी में दस्तावेज़ का नाम लिखकर खोजें।">Type a document name in English or हिन्दी to find it.</p>
-  <input id="service-search" type="search" data-ph-en="Search: sale deed, stamp, rent, जमाबंदी" data-ph-hi="खोजें: बैनामा, स्टाम्प, किरायानामा, जमाबंदी" placeholder="Search: sale deed, stamp, rent, जमाबंदी" aria-label="Search services">
+  <input id="service-search" type="search" data-ph-en="Search: sale deed, stamp, rent, जमाबंदी" data-ph-hi="खोजें: बैनामा / विक्रय पत्र, स्टाम्प, किरायानामा, जमाबंदी" placeholder="Search: sale deed, stamp, rent, जमाबंदी" aria-label="Search services">
   <ul id="services-list" class="ledger"></ul>
   <p id="no-results" class="empty" hidden></p>
 </div></section>
@@ -85,7 +104,7 @@
 
 <section id="contact" class="section alt"><div class="wrap contact">
   <div>
-    <h2 data-en="Visit the office" data-hi="ऑफ़िस आएँ">Visit the office</h2>
+    <h2 data-en="Visit the office" data-hi="कार्यालय आएँ">Visit the office</h2>
     <dl>
       <dt data-en="Address" data-hi="पता">Address</dt><dd data-en="Opposite SBI Bank, Nagar Nigam Road, Sanganer, Jaipur, Rajasthan 302029" data-hi="एसबीआई बैंक के सामने, नगर निगम रोड, सांगानेर, जयपुर, राजस्थान 302029">Opposite SBI Bank, Nagar Nigam Road, Sanganer, Jaipur, Rajasthan 302029</dd>
       <dt data-en="Phone" data-hi="फ़ोन">Phone</dt><dd><a href="tel:+919829017080">+91 98290 17080</a></dd>
