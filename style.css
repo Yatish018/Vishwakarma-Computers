@@ -98,3 +98,18 @@ dt{font-weight:600;color:var(--blue);margin-top:14px}dd{margin:0}dd a{color:var(
 .btn:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(0,0,0,.18)}.tabs button:hover{border-color:var(--p)}
 .fab{animation:ring 3s infinite}@keyframes ring{0%,88%{transform:none}92%{transform:rotate(-14deg)}96%{transform:rotate(14deg)}}
 @media (max-width:760px){.menu-btn{display:grid}.nav{animation:drop .2s ease}.brand small{display:none}.brand strong{font-size:1.05rem}.tools{gap:6px}.lang button{padding:0 9px}.theme-pop{right:-48px}.topbar-in{font-size:.8rem}}
+
+/* ---- v4: logo seal, centred map button, shine + pop-up tips ---- */
+.seal b{font-size:4.2rem;letter-spacing:.02em}
+.seal img{width:80%;height:80%;object-fit:contain;border-radius:50%;justify-self:center}
+.seal.has-logo b{display:none}
+.contact{grid-template-columns:1fr;gap:26px}
+.contact .actions.col{flex-direction:row;flex-wrap:wrap;justify-content:center;align-items:center}
+.btn,.ledger li,.tabs button,.seal{position:relative;overflow:hidden}
+.btn::after,.ledger li::after,.tabs button::after,.seal::after{content:"";position:absolute;top:0;left:-70%;width:45%;height:100%;background:linear-gradient(105deg,transparent,var(--shine,rgba(255,255,255,.5)),transparent);transform:skewX(-20deg);pointer-events:none}
+.btn:hover::after,.ledger li:hover::after,.tabs button:hover::after,.seal:hover::after{left:150%;transition:left .75s ease}
+.ledger li,.tabs button{--shine:color-mix(in srgb,var(--blue) 18%,transparent)}
+.tabs button[aria-selected=true]{--shine:rgba(255,255,255,.45)}
+#tip{position:fixed;top:0;left:0;z-index:80;max-width:240px;padding:7px 12px;border-radius:9px;background:var(--ink);color:var(--paper);font:500 .85rem/1.4 Hind,sans-serif;box-shadow:0 8px 24px rgba(0,0,0,.25);opacity:0;transform:translateY(6px) scale(.92);transition:opacity .18s,transform .18s;pointer-events:none}
+#tip.show{opacity:1;transform:none}
+@media (max-width:760px){.seal b{font-size:3.2rem}}
