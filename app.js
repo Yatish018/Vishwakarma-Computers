@@ -36,8 +36,8 @@ const SERVICES = [
 ];
 
 const CHECKS = {
-  sale: { tab: { en: "Sale Deed", hi: "बैनामा" },
-    title: { en: "Documents for a Sale Deed", hi: "बैनामा के लिए दस्तावेज़" },
+  sale: { tab: { en: "Sale Deed", hi: "बैनामा / विक्रय पत्र" },
+    title: { en: "Documents for a Sale Deed", hi: "बैनामा / विक्रय पत्र के लिए दस्तावेज़" },
     note: { en: "Buyer, seller and 2 witnesses must bring original photo ID.", hi: "खरीदार, विक्रेता और 2 गवाह मूल फोटो पहचान पत्र साथ लाएँ।" },
     items: [
       { en: "Original title papers or chain of deeds", hi: "मूल पट्टा, रजिस्ट्री या आवंटन पत्र" },
@@ -83,7 +83,7 @@ const T = {
   copy: { en: "Copy list", hi: "सूची कॉपी करें" }, copied: { en: "Copied", hi: "कॉपी हो गई" },
   share: { en: "Send on WhatsApp", hi: "व्हाट्सऐप पर भेजें" },
   name: { en: "Please enter your name.", hi: "कृपया अपना नाम लिखें." },
-  open: { en: "Open now", hi: "अभी खुला है" }, closed: { en: "Closed now", hi: "अभी बंद है" },
+  open: { en: "Open", hi: "खुला" }, closed: { en: "Closed", hi: "बंद" },
   sun: { en: "Closed today (Sunday)", hi: "आज बंद (रविवार)" },
   sealOpen: { en: "OPEN", hi: "खुला" }, sealClosed: { en: "CLOSED", hi: "बंद" },
   opensAt: { en: "opens 9:30 AM", hi: "सुबह 9:30 बजे खुलेगा" }, until: { en: "until 9:30 PM", hi: "रात 9:30 बजे तक" },
@@ -96,7 +96,7 @@ function applyLang() {
   document.querySelectorAll("[data-en]").forEach((el) => (el.textContent = el.dataset[lang]));
   document.querySelectorAll("[data-ph-en]").forEach((el) => (el.placeholder = el.dataset["ph" + (lang === "en" ? "En" : "Hi")]));
   document.querySelectorAll("[data-lang]").forEach((b) => b.setAttribute("aria-pressed", b.dataset.lang === lang));
-  renderServices(); fillSelect(); renderTabs(); renderChecklist(activeTab); updateStatus(); filterServices();
+  renderServices(); renderSwatches(); fillSelect(); renderTabs(); renderChecklist(activeTab); updateStatus(); filterServices();
   const link = wa(L(T.hello));
   $("#hero-wa").href = link; $("#fab").href = link;
 }
@@ -176,7 +176,8 @@ function updateStatus() {
   $("#office-status").className = "status " + (open ? "open" : "closed");
   $("#seal").className = "seal " + (open ? "open" : "closed");
   $("#seal-state").textContent = L(open ? T.sealOpen : T.sealClosed);
-  $("#status-text").textContent = open ? `${L(T.open)} · ${L(T.until)}` : sun ? L(T.sun) : `${L(T.closed)} · ${L(T.opensAt)}`;
+  $("#status-text").textContent = open ? L(T.open) : sun ? L(T.sun) : L(T.closed);
+  $("#clock").textContent = new Date().toLocaleString(lang === "hi" ? "hi-IN" : "en-IN", { timeZone: "Asia/Kolkata", weekday: "short", day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: true }) + " IST";
 }
 
 // ---------- Misc ----------
@@ -184,11 +185,66 @@ $("#menu-btn").addEventListener("click", () => {
   const n = $("#nav"), o = n.classList.toggle("open");
   $("#menu-btn").setAttribute("aria-expanded", o);
 });
-document.querySelectorAll("#nav a").forEach((a) => a.addEventListener("click", () => $("#nav").classList.remove("open")));
+const closeMenu = () => { $("#nav").classList.remove("open"); $("#menu-btn").setAttribute("aria-expanded", "false"); };
+document.querySelectorAll("#nav a").forEach((a) => a.addEventListener("click", closeMenu));
 $("#copy-addr").addEventListener("click", async (e) => {
   try { await navigator.clipboard.writeText(ADDR); e.target.textContent = L(T.copied); } catch (err) {}
   setTimeout(() => (e.target.textContent = e.target.dataset[lang]), 2000);
 });
+// ---------- Theme: colour + light/dark ----------
+const PALS = [["stamp", "#1b2a6b", "Stamp blue", "स्टाम्प नीला"], ["rose", "#9d2450", "Jaipur rose", "जयपुर गुलाबी"], ["forest", "#0f5c4a", "Forest green", "वन हरा"], ["saffron", "#b14a0a", "Saffron", "केसरिया"]];
+const store = (k, v) => { try { if (v === undefined) return localStorage.getItem(k); localStorage.setItem(k, v); } catch (e) {} };
+let pal = store("pal") || "stamp", mode = store("mode") || "auto";
+const darkMQ = matchMedia("(prefers-color-scheme: dark)");
+function applyTheme() {
+  const root = document.documentElement;
+  root.dataset.pal = pal;
+  root.dataset.mode = mode === "auto" ? (darkMQ.matches ? "dark" : "light") : mode;
+  document.querySelectorAll(".sw").forEach((b) => b.setAttribute("aria-pressed", b.dataset.pal === pal));
+  document.querySelectorAll(".modes button").forEach((b) => b.setAttribute("aria-pressed", b.dataset.mode === mode));
+  document.querySelector("meta[name=theme-color]").content = PALS.find((p) => p[0] === pal)[1];
+}
+function renderSwatches() {
+  $("#swatches").innerHTML = PALS.map((p) => `<button type="button" class="sw" data-pal="${p[0]}" style="background:${p[1]}" title="${lang === "en" ? p[2] : p[3]}" aria-label="${lang === "en" ? p[2] : p[3]}"></button>`).join("");
+  applyTheme();
+}
+$("#swatches").addEventListener("click", (e) => { const b = e.target.closest(".sw"); if (b) { pal = b.dataset.pal; store("pal", pal); applyTheme(); } });
+document.querySelector(".modes").addEventListener("click", (e) => { const b = e.target.closest("button"); if (b) { mode = b.dataset.mode; store("mode", mode); applyTheme(); } });
+darkMQ.addEventListener("change", applyTheme);
+const pop = $("#theme-pop"), themeBtn = $("#theme-btn");
+const setPop = (open) => { pop.hidden = !open; themeBtn.setAttribute("aria-expanded", open); };
+themeBtn.addEventListener("click", (e) => { e.stopPropagation(); setPop(pop.hidden); });
+document.addEventListener("click", (e) => { if (!pop.hidden && !pop.contains(e.target)) setPop(false); });
+document.addEventListener("keydown", (e) => { if (e.key === "Escape") { setPop(false); closeMenu(); } });
+
+// ---------- Header hides on scroll down, returns on scroll up ----------
+const header = $(".site-header");
+let lastY = 0;
+addEventListener("scroll", () => {
+  const y = scrollY, lock = $("#nav").classList.contains("open") || !pop.hidden;
+  header.classList.toggle("scrolled", y > 10);
+  header.classList.toggle("hide", y > lastY && y > 140 && !lock);
+  lastY = y;
+  $("#progress").style.width = (y / Math.max(1, document.documentElement.scrollHeight - innerHeight)) * 100 + "%";
+}, { passive: true });
+
+// ---------- Motion: reveal, active menu link, rotating deed names, seal tilt ----------
+document.querySelectorAll("main .wrap > *").forEach((el) => el.classList.add("rv"));
+const reveal = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add("in"); reveal.unobserve(e.target); } }), { threshold: 0.1 });
+document.querySelectorAll(".rv").forEach((el) => reveal.observe(el));
+const spy = new IntersectionObserver((es) => es.forEach((e) => {
+  if (e.isIntersecting) document.querySelectorAll("#nav a:not(.btn)").forEach((a) => a.classList.toggle("active", a.getAttribute("href") === "#" + e.target.id));
+}), { rootMargin: "-40% 0px -55% 0px" });
+document.querySelectorAll("main section").forEach((s) => spy.observe(s));
+let ti = 0;
+const tick = () => { $("#ticker").innerHTML = `<span>✦ ${L(SERVICES[ti++ % SERVICES.length][2])}</span>`; };
+tick(); setInterval(tick, 2400);
+const heroEl = $(".hero"), sealEl = $("#seal");
+heroEl.addEventListener("pointermove", (e) => {
+  const r = heroEl.getBoundingClientRect(), x = (e.clientX - r.left) / r.width - 0.5, y = (e.clientY - r.top) / r.height - 0.5;
+  sealEl.style.transform = `rotate(${-8 + x * 12}deg) translate(${x * 14}px,${y * 14}px)`;
+});
+
 $("#year").textContent = new Date().getFullYear();
 applyLang();
-setInterval(updateStatus, 30000);
+setInterval(updateStatus, 1000);
