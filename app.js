@@ -1,13 +1,25 @@
 "use strict";
 const PHONE = "919829017080";
 const ADDR = "Vishwakarma Computers, Opp. SBI Bank, Nagar Nigam Road, Sanganer, Jaipur 302029";
-const $ = (s) => document.querySelector(s);
+// If an element is missing, return a harmless dummy so one mistake can never stop the whole page.
+const $ = (s) => document.querySelector(s) || document.createElement("i");
 const wa = (t) => `https://wa.me/${PHONE}?text=${encodeURIComponent(t)}`;
 let lang = "en";
 try { lang = localStorage.getItem("lang") || "en"; } catch (e) {}
 const L = (o) => o[lang];
 
-// ---------- DATA (edit text here) ----------
+/* =====================================================================
+   HOW THIS FILE IS ORGANISED  (edit the DATA section for most changes)
+   1. Settings    : phone number, address, small helpers
+   2. DATA        : SERVICES (deeds), REALTY (real estate), LISTINGS (properties),
+                    CHECKS (document lists), T (small text labels)
+   3. Features    : language, search, checklist, forms, status clock, theme,
+                    header scroll, animations, hover tips
+   Every text has two versions:  en = English,  hi = Hindi.
+   ===================================================================== */
+
+// ---------- DATA 1: SERVICES = deed & legal services shown in section "Deed & legal services" ----------
+// Each row:  [icon, search-keywords, {en,hi} title, {en,hi} description]
 const SERVICES = [
   ["📜", "sale deed registry property plot flat बैनामा विक्रय पत्र जमीन",
     { en: "Sale Deed", hi: "बैनामा / विक्रय पत्र" },
@@ -35,6 +47,46 @@ const SERVICES = [
     { en: "General or Special Power of Attorney and registered Wills.", hi: "सामान्य या विशेष मुख्तारनामा और पंजीकृत वसीयत।" }],
 ];
 
+// ---------- DATA 2: REALTY = real estate services (same row format as SERVICES) ----------
+// Edit these to match exactly what your office offers. Add a new row to add a service.
+const REALTY = [
+  ["🏡", "buy sell property plot flat house land real estate प्रॉपर्टी खरीद बिक्री मकान प्लॉट",
+    { en: "Buy / Sell Property", hi: "प्रॉपर्टी खरीद / बिक्री" },
+    { en: "Plots, flats, houses and farm land: fair-price guidance and all paperwork under one roof.", hi: "प्लॉट, फ्लैट, मकान और कृषि भूमि: सही कीमत की सलाह और पूरा दस्तावेज़ी काम एक ही जगह।" }],
+  ["🔍", "title verification ownership patta allotment check टाइटल जाँच स्वामित्व पट्टा",
+    { en: "Title & Document Check", hi: "टाइटल व दस्तावेज़ जाँच" },
+    { en: "Check ownership papers, patta or allotment and records before you pay any money.", hi: "पैसा देने से पहले स्वामित्व कागज़, पट्टा या आवंटन और रिकॉर्ड की जाँच।" }],
+  ["💰", "valuation dlc rate stamp duty registration cost मूल्यांकन डीएलसी स्टाम्प ड्यूटी",
+    { en: "Valuation & Stamp Duty", hi: "मूल्यांकन व स्टाम्प ड्यूटी" },
+    { en: "Know the market value, DLC rate and approximate registration cost in advance.", hi: "बाज़ार मूल्य, डीएलसी दर और रजिस्ट्रेशन खर्च का पहले से अनुमान।" }],
+  ["🏢", "rent lease tenant landlord property किराए पर मकान दुकान किरायेदार",
+    { en: "Rent & Lease Dealing", hi: "किराया व लीज़ डीलिंग" },
+    { en: "Find a tenant, or a rented home or shop, and get the agreement drafted and registered.", hi: "किरायेदार या किराए का मकान/दुकान खोजें और अनुबंध बनवाकर रजिस्टर कराएँ।" }],
+  ["🧾", "mutation name transfer namantaran records नामांतरण",
+    { en: "Name Transfer (Mutation)", hi: "नामांतरण (म्यूटेशन)" },
+    { en: "Get your name entered in municipal or revenue records after the registry.", hi: "रजिस्ट्री के बाद नगर निगम या राजस्व रिकॉर्ड में अपना नाम दर्ज कराएँ।" }],
+  ["🏗️", "approval jda nagar nigam conversion layout plot भू-रूपांतरण पट्टा अनुमोदन",
+    { en: "Approval & Land-use Check", hi: "अनुमोदन व भू-उपयोग जाँच" },
+    { en: "Check layout approval and land-use conversion status before buying a plot.", hi: "प्लॉट खरीदने से पहले लेआउट अनुमोदन और भू-रूपांतरण की स्थिति की जाँच।" }],
+];
+// ALL = deeds + real estate together (used by the enquiry dropdown and the rotating headline words)
+const ALL = [...SERVICES, ...REALTY];
+
+// ---------- DATA 3: LISTINGS = properties you want to show on the site ----------
+// Leave empty ([]) and the "Available properties" block stays hidden.
+// To add one, copy the example below, remove the // marks, and fill your details.
+const LISTINGS = [
+  // { title: { en: "3 BHK House", hi: "3 बीएचके मकान" },
+  //   place: { en: "Sanganer, Jaipur", hi: "सांगानेर, जयपुर" },
+  //   price: "₹ 55 lakh",
+  //   info:  { en: "1200 sq ft, east facing", hi: "1200 वर्ग फुट, पूर्वमुखी" } },
+];
+
+// ---------- DATA 4: option lists for the property requirement form ----------
+const GOALS = [{ en: "Buy", hi: "खरीदना" }, { en: "Sell", hi: "बेचना" }, { en: "Rent in (take on rent)", hi: "किराए पर लेना" }, { en: "Rent out (give on rent)", hi: "किराए पर देना" }];
+const KINDS = [{ en: "Plot", hi: "प्लॉट" }, { en: "Flat", hi: "फ्लैट" }, { en: "House", hi: "मकान" }, { en: "Shop / Office", hi: "दुकान / ऑफिस" }, { en: "Farm land", hi: "कृषि भूमि" }];
+
+// ---------- DATA 5: CHECKS = document checklist (tabs in section "What to bring") ----------
 const CHECKS = {
   sale: { tab: { en: "Sale Deed", hi: "बैनामा / विक्रय पत्र" },
     title: { en: "Documents for a Sale Deed", hi: "बैनामा / विक्रय पत्र के लिए दस्तावेज़" },
@@ -79,6 +131,7 @@ const CHECKS = {
 
 const T = {
   inq: { en: "Inquire on WhatsApp", hi: "व्हाट्सऐप पर पूछें" },
+  need: { en: "Please enter your name and the area.", hi: "कृपया अपना नाम और क्षेत्र लिखें।" },
   none: { en: "No service matches that. Try another word, or WhatsApp us and we will help.", hi: "इस नाम की कोई सेवा नहीं मिली। दूसरा शब्द लिखें, या हमें व्हाट्सऐप करें।" },
   copy: { en: "Copy list", hi: "सूची कॉपी करें" }, copied: { en: "Copied", hi: "कॉपी हो गई" },
   share: { en: "Send on WhatsApp", hi: "व्हाट्सऐप पर भेजें" },
@@ -96,7 +149,7 @@ function applyLang() {
   document.querySelectorAll("[data-en]").forEach((el) => (el.textContent = el.dataset[lang]));
   document.querySelectorAll("[data-ph-en]").forEach((el) => (el.placeholder = el.dataset["ph" + (lang === "en" ? "En" : "Hi")]));
   document.querySelectorAll("[data-lang]").forEach((b) => b.setAttribute("aria-pressed", b.dataset.lang === lang));
-  renderServices(); renderSwatches(); fillSelect(); renderTabs(); renderChecklist(activeTab); updateStatus(); filterServices();
+  renderServices(); renderRealty(); renderSwatches(); fillSelect(); renderTabs(); renderChecklist(activeTab); updateStatus(); filterServices();
   const link = wa(L(T.hello));
   $("#hero-wa").href = link; $("#fab").href = link;
 }
@@ -108,16 +161,41 @@ document.querySelectorAll("[data-lang]").forEach((b) =>
   }));
 
 // ---------- Services + search ----------
+// Builds the HTML for service rows. Used for both deed services and real estate services.
+const rows = (list) => list.map(([icon, kw, title, desc]) =>
+  `<li data-kw="${(kw + " " + title.en + " " + title.hi).toLowerCase()}" data-tip-en="Ask about ${title.en} on WhatsApp" data-tip-hi="${title.hi} के बारे में व्हाट्सऐप पर पूछें"><span class="ic" aria-hidden="true">${icon}</span>
+   <h3>${L(title)}</h3><p>${L(desc)}</p>
+   <a target="_blank" rel="noopener noreferrer" href="${wa(`Namaste, I want to inquire about ${title.en} (${title.hi}).`)}">${L(T.inq)}</a></li>`).join("");
 function renderServices() {
-  $("#services-list").innerHTML = SERVICES.map(([icon, kw, title, desc]) =>
-    `<li data-kw="${(kw + " " + title.en + " " + title.hi).toLowerCase()}" data-tip-en="Ask about ${title.en} on WhatsApp" data-tip-hi="${title.hi} के बारे में व्हाट्सऐप पर पूछें"><span class="ic" aria-hidden="true">${icon}</span>
-     <h3>${L(title)}</h3><p>${L(desc)}</p>
-     <a target="_blank" rel="noopener noreferrer" href="${wa(`Namaste, I want to inquire about ${title.en} (${title.hi}).`)}">${L(T.inq)}</a></li>`).join("");
+  $("#services-list").innerHTML = rows(SERVICES);
+  $("#realty-list").innerHTML = rows(REALTY);
 }
+
+// ---------- Real estate: property cards + requirement form ----------
+function renderRealty() {
+  // property cards (block stays hidden when LISTINGS is empty)
+  $("#listings-wrap").hidden = LISTINGS.length === 0;
+  $("#listings").innerHTML = LISTINGS.map((p) =>
+    `<article class="lcard"><h4>${L(p.title)}</h4><p>📍 ${L(p.place)}</p><p>${L(p.info)}</p><p class="price">${p.price}</p>
+     <a target="_blank" rel="noopener noreferrer" href="${wa(`Namaste, I am interested in: ${p.title.en}, ${p.place.en}, ${p.price}.`)}">${L(T.inq)}</a></article>`).join("");
+  // dropdowns (keep the visitor's current choice when the language changes)
+  const fill = (id, list) => { const s = $(id), k = s.selectedIndex; s.innerHTML = list.map((o, i) => `<option value="${i}">${L(o)}</option>`).join(""); if (k > 0) s.selectedIndex = k; };
+  fill("#r-goal", GOALS); fill("#r-kind", KINDS);
+}
+$("#realty-form").addEventListener("submit", (e) => {
+  e.preventDefault();
+  const name = $("#r-name").value.trim(), area = $("#r-area").value.trim(), err = $("#r-err");
+  if (!name || !area) { err.textContent = L(T.need); err.hidden = false; return; }
+  err.hidden = true;
+  const goal = GOALS[$("#r-goal").value].en, kind = KINDS[$("#r-kind").value].en, budget = $("#r-budget").value.trim();
+  window.open(wa(`Namaste, my name is ${name}. I want to: ${goal}. Property: ${kind} in ${area}.${budget ? " Budget: " + budget + "." : ""}`), "_blank", "noopener");
+});
+
+// ---------- Search (filters both lists) ----------
 function filterServices() {
   const q = $("#service-search").value.toLowerCase().trim();
   let shown = 0;
-  document.querySelectorAll("#services-list li").forEach((li) => {
+  document.querySelectorAll("#services-list li, #realty-list li").forEach((li) => {
     const ok = li.dataset.kw.includes(q);
     li.hidden = !ok; if (ok) shown++;
   });
@@ -155,7 +233,7 @@ function renderChecklist(type) {
 // ---------- Enquiry form ----------
 function fillSelect() {
   const sel = $("#f-service"), keep = sel.selectedIndex;
-  sel.innerHTML = SERVICES.map(([, , t], i) => `<option value="${i}">${L(t)}</option>`).join("");
+  sel.innerHTML = ALL.map(([, , t], i) => `<option value="${i}">${L(t)}</option>`).join("");
   if (keep > 0) sel.selectedIndex = keep;
 }
 $("#enquiry").addEventListener("submit", (e) => {
@@ -163,7 +241,7 @@ $("#enquiry").addEventListener("submit", (e) => {
   const name = $("#f-name").value.trim(), err = $("#f-err");
   if (!name) { err.textContent = L(T.name); err.hidden = false; $("#f-name").focus(); return; }
   err.hidden = true;
-  const t = SERVICES[$("#f-service").value][2], msg = $("#f-msg").value.trim();
+  const t = ALL[$("#f-service").value][2], msg = $("#f-msg").value.trim();
   window.open(wa(`Namaste, my name is ${name}. I need help with: ${t.en} (${t.hi}).${msg ? "\n" + msg : ""}`), "_blank", "noopener");
 });
 
@@ -208,7 +286,7 @@ function renderSwatches() {
 }
 $("#swatches").addEventListener("click", (e) => { const b = e.target.closest(".sw"); if (b) { pal = b.dataset.pal; store("pal", pal); applyTheme(); } });
 document.querySelector(".modes").addEventListener("click", (e) => { const b = e.target.closest("button"); if (b) { mode = b.dataset.mode; store("mode", mode); applyTheme(); } });
-darkMQ.addEventListener("change", applyTheme);
+darkMQ.addEventListener ? darkMQ.addEventListener("change", applyTheme) : darkMQ.addListener(applyTheme); // old-browser safe
 const pop = $("#theme-pop"), themeBtn = $("#theme-btn");
 const setPop = (open) => { pop.hidden = !open; themeBtn.setAttribute("aria-expanded", open); };
 themeBtn.addEventListener("click", (e) => { e.stopPropagation(); setPop(pop.hidden); });
@@ -227,6 +305,8 @@ addEventListener("scroll", () => {
 }, { passive: true });
 
 // ---------- Motion: reveal, active menu link, rotating deed names, seal tilt ----------
+// Old browsers without IntersectionObserver: skip scroll animations and show everything.
+if (!("IntersectionObserver" in window)) { document.documentElement.classList.remove("js"); window.IntersectionObserver = class { observe() {} unobserve() {} }; }
 document.querySelectorAll("main .wrap > *").forEach((el) => el.classList.add("rv"));
 const reveal = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add("in"); reveal.unobserve(e.target); } }), { threshold: 0.1 });
 document.querySelectorAll(".rv").forEach((el) => reveal.observe(el));
@@ -235,7 +315,7 @@ const spy = new IntersectionObserver((es) => es.forEach((e) => {
 }), { rootMargin: "-40% 0px -55% 0px" });
 document.querySelectorAll("main section").forEach((s) => spy.observe(s));
 let ti = 0;
-const tick = () => { $("#ticker").innerHTML = `<span>✦ ${L(SERVICES[ti++ % SERVICES.length][2])}</span>`; };
+const tick = () => { $("#ticker").innerHTML = `<span>✦ ${L(ALL[ti++ % ALL.length][2])}</span>`; };
 tick(); setInterval(tick, 2400);
 const heroEl = $(".hero"), sealEl = $("#seal");
 heroEl.addEventListener("pointermove", (e) => {
@@ -271,3 +351,6 @@ probe.src = "logo.png";
 $("#year").textContent = new Date().getFullYear();
 applyLang();
 setInterval(updateStatus, 1000);
+
+// Tell the page in index.html that the script finished without errors.
+window.__ok = 1;
