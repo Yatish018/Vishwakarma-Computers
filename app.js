@@ -353,4 +353,12 @@ applyLang();
 setInterval(updateStatus, 1000);
 
 // Tell the page in index.html that the script finished without errors.
+// ---------- Main logo: moves a little with the cursor while it is over the circle ----------
+sealEl.addEventListener("pointermove", (e) => {
+  const r = sealEl.getBoundingClientRect();
+  sealEl.style.setProperty("--mx", ((e.clientX - r.left) / r.width - 0.5) * 16 + "px");
+  sealEl.style.setProperty("--my", ((e.clientY - r.top) / r.height - 0.5) * 16 + "px");
+});
+sealEl.addEventListener("pointerleave", () => { sealEl.style.setProperty("--mx", "0px"); sealEl.style.setProperty("--my", "0px"); });
+
 window.__ok = 1;
