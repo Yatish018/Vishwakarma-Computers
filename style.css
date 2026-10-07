@@ -150,3 +150,11 @@ dt{font-weight:600;color:var(--blue);margin-top:14px}dd{margin:0}dd a{color:var(
 .brand-text{display:grid;min-width:0}
 .brand-logo{width:48px;height:48px;flex:none;object-fit:contain;background:#fff;border:1px solid var(--line);border-radius:50%}
 @media (max-width:760px){.brand-logo{width:40px;height:40px}}
+
+/* ---- v6: main logo (circle) gently moves when the cursor is on it ----
+   --mx / --my are set by app.js from the cursor position (small pixel offsets). */
+.seal.has-logo{cursor:pointer;transition:transform .25s ease-out}
+.seal.has-logo:hover{transform:translate(var(--mx,0px),var(--my,0px)) rotate(-4deg) scale(1.06)!important}
+
+/* keep the header tidy now that the logo sits beside the name (desktop only) */
+@media (min-width:761px){.brand-logo{width:44px;height:44px}.brand small{font-size:.76rem;white-space:nowrap}.nav{gap:16px}.head-in{gap:12px}}
